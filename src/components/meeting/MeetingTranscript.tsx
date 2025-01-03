@@ -1,39 +1,30 @@
 import React from 'react';
 import { MeetingSegment } from '../../types/meeting';
+import { Segment } from '../../types/meetingSummaries';
 
 interface MeetingTranscriptProps {
-  transcript: string;
-  segments?: MeetingSegment[];
+  segments: Segment[];
   onSegmentClick?: (startTime: number) => void;
 }
 
 export function MeetingTranscript({ 
-  transcript, 
   segments,
   onSegmentClick 
 }: MeetingTranscriptProps) {
-  if (segments) {
-    return (
-      <div className="space-y-4">
-        {segments.map((segment, index) => (
-          <div 
-            key={index}
-            onClick={() => onSegmentClick?.(segment.startTime)}
-            className="p-3 hover:bg-gray-50 rounded cursor-pointer"
-          >
-            <div className="text-sm text-gray-500 mb-1">
-              {formatTime(segment.startTime)} - {formatTime(segment.endTime)}
-            </div>
-            <p className="text-gray-700">{segment.text}</p>
-          </div>
-        ))}
-      </div>
-    );
-  }
-
   return (
-    <div className="text-gray-700">
-      {transcript}
+    <div className="space-y-4">
+      {segments.map((segment, index) => (
+        <div 
+          key={index}
+          onClick={() => onSegmentClick?.(segment.startTime)}
+          className="p-3 hover:bg-gray-50 rounded cursor-pointer"
+        >
+          <div className="text-sm text-gray-500 mb-1">
+            {formatTime(segment.startTime)} - {formatTime(segment.endTime)}
+          </div>
+          <p className="text-gray-700">{segment.text}</p>
+        </div>
+      ))}
     </div>
   );
 }

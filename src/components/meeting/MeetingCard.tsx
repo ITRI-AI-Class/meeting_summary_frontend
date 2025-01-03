@@ -38,11 +38,11 @@ export function MeetingCard({
 
       <div className="p-4">
         <h3 className="text-lg font-semibold text-gray-900 mb-3">
-          {meetingSummary.title}
+          {meetingSummary.data.summary.title}
         </h3>
 
         <div className="flex flex-wrap gap-2 mb-4">
-          {meetingSummary.tags.map((tag) => (
+          {meetingSummary.data.summary.tags.map((tag) => (
             <span
               key={tag}
               className="px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full text-sm font-medium"
