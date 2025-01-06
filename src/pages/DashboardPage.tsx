@@ -5,19 +5,19 @@ import { MeetingCard } from '../components/meeting/MeetingCard';
 import { Button } from '../components/common/Button';
 import { DateSearch } from '../components/meeting/DateSearch';
 import { MeetingControls } from '../components/meeting/MeetingControls';
-import { useMeetingSummaries } from '../hooks/useMeetingSummaries.ts';
+import { useMeetingSummaries } from '../contexts/MeetingSummariesContext.tsx';
 import { MeetingSelectionProvider, useMeetingSelection } from '../components/meeting/MeetingSelectionContext.tsx'; // Import the provider and hook
 
 
 export function DashboardPage() {
   const navigate = useNavigate();
-  const { meetingSummaries, sortMeetingSummaries } = useMeetingSummaries();
+  const { meetingSummaries, sortMeetingSummaries } = useMeetingSummaries()!;
 
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [isSelectMode, setIsSelectMode] = useState(false);
-  const [selectedMeetingSummaries, setSelectedMeetingSummaries] = useState<number[]>([]);
+  const [selectedMeetingSummaries, setSelectedMeetingSummaries] = useState<string[]>([]);
 
-  const toggleSelection = (meetingId: number) => {
+  const toggleSelection = (meetingId: string) => {
     setSelectedMeetingSummaries((prev) =>
       prev.includes(meetingId)
         ? prev.filter((id) => id !== meetingId) // 取消選中
@@ -27,14 +27,14 @@ export function DashboardPage() {
 
   const availableTags = useMemo(() => {
     const tags = new Set<string>();
-    meetingSummaries.forEach(meetingSummary => meetingSummary.tags.forEach(tag => tags.add(tag)));
+    meetingSummaries.forEach(meetingSummary => meetingSummary.data.data.summary.tags.forEach(tag => tags.add(tag)));
     return Array.from(tags);
   }, [meetingSummaries]);
 
   const filteredMeetings = useMemo(() => {
     if (selectedTags.length === 0) return meetingSummaries;
     return meetingSummaries.filter(meetingSummary =>
-      selectedTags.some(tag => meetingSummary.tags.includes(tag))
+      selectedTags.some(tag => meetingSummary.data.data.summary.tags.includes(tag))
     );
   }, [meetingSummaries, selectedTags]);
 
