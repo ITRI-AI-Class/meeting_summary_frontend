@@ -32,6 +32,9 @@ export interface MeetingSummaryApiResponse {
     message: string;
     data: {
         summary: Summary;
-        segments: Segment[];
+        transcription: {
+            duration: number;
+            segments: Segment[];
+        };
     }
 }

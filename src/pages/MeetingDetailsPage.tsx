@@ -94,7 +94,7 @@ export function MeetingDetailsPage() {
             <h2 className="text-xl font-semibold text-gray-900 mb-3">Transcript</h2>
             <div className="bg-white p-4 rounded-lg border border-gray-200 max-h-96 overflow-y-auto">
               <MeetingTranscript
-                segments={meetingSummary.data.data.segments}
+                segments={meetingSummary.data.data.transcription.segments}
                 onSegmentClick={handleSegmentClick}
               />
             </div>

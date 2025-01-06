@@ -41,6 +41,18 @@ export function UploadPage() {
     }
   };
 
+  function formatTime(seconds: number) {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const remainingSeconds = Math.floor(seconds % 60);
+  
+    if (hours > 0) {
+      return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+    }
+  
+    return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+  }
+
   const handleUploadClick = async () => {
     setIsLoading(true);
     if (file) {
@@ -52,8 +64,8 @@ export function UploadPage() {
         addMeetingSummary({
           id: id,
           data: result,
-          date: Date.now().toString(),
-          duration: "1:00:00",
+          date: new Date().toISOString().split('T')[0],
+          duration: formatTime(result.data.transcription.duration),
           thumbnailUrl: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=80",
           status: MeetingSummaryStatus.Completed,
         });
