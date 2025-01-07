@@ -1,21 +1,39 @@
-import React, { useState, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Upload, Video } from 'lucide-react';
-import { MeetingCard } from '../components/meeting/MeetingCard';
+import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/common/Button';
 import { DateSearch } from '../components/meeting/DateSearch';
+import { MeetingCard } from '../components/meeting/MeetingCard';
 import { MeetingControls } from '../components/meeting/MeetingControls';
+import { MeetingSelectionProvider } from '../components/meeting/MeetingSelectionContext.tsx'; // Import the provider and hook
 import { useMeetingSummaries } from '../contexts/MeetingSummariesContext.tsx';
-import { MeetingSelectionProvider, useMeetingSelection } from '../components/meeting/MeetingSelectionContext.tsx'; // Import the provider and hook
+import { fetchMeetingSummariesData } from '../services/firestore.ts';
+import { useAuth } from '../contexts/AuthContext.tsx';
 
 
 export function DashboardPage() {
   const navigate = useNavigate();
-  const { meetingSummaries, sortMeetingSummaries } = useMeetingSummaries()!;
+  const { user } = useAuth();
+  const { meetingSummaries, sortMeetingSummaries, refreshMeetingSummaries } = useMeetingSummaries()!;
 
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [isSelectMode, setIsSelectMode] = useState(false);
   const [selectedMeetingSummaries, setSelectedMeetingSummaries] = useState<string[]>([]);
+  
+  useEffect(() => {
+    const fetchData = async () => {
+        if (user) {
+            try {
+                const data = await fetchMeetingSummariesData(user.id);
+                refreshMeetingSummaries(data);
+            } catch (error) {
+                console.error("Error fetching meeting summaries:", error);
+            }
+        }
+    };
+
+    fetchData();
+}, [user]);
 
   const toggleSelection = (meetingId: string) => {
     setSelectedMeetingSummaries((prev) =>
@@ -27,14 +45,14 @@ export function DashboardPage() {
 
   const availableTags = useMemo(() => {
     const tags = new Set<string>();
-    meetingSummaries.forEach(meetingSummary => meetingSummary.data.data.summary.tags.forEach(tag => tags.add(tag)));
+    meetingSummaries.forEach(meetingSummary => meetingSummary.summary.tags.forEach(tag => tags.add(tag)));
     return Array.from(tags);
   }, [meetingSummaries]);
 
   const filteredMeetings = useMemo(() => {
     if (selectedTags.length === 0) return meetingSummaries;
     return meetingSummaries.filter(meetingSummary =>
-      selectedTags.some(tag => meetingSummary.data.data.summary.tags.includes(tag))
+      selectedTags.some(tag => meetingSummary.summary.tags.includes(tag))
     );
   }, [meetingSummaries, selectedTags]);
 

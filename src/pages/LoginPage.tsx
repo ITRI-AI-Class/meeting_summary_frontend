@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { User, KeyRound } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { validatePassword } from '../utils/passwordValidation';
+import GoogleSignIn from '../components/login/GoogleSignIn';
 
 export function LoginPage() {
   const [credentials, setCredentials] = useState({ username: '', password: '' });
@@ -94,6 +95,7 @@ export function LoginPage() {
           >
             Sign in
           </button>
+          <GoogleSignIn />
         </form>
       </div>
     </div>

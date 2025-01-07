@@ -3,18 +3,18 @@ export interface User {
   name: string;
   email: string;
   avatarUrl?: string;
-  status: 'active' | 'inactive';
-  language: 'en' | 'zh';
+  status?: 'active' | 'inactive';
+  language?: 'en' | 'zh';
   preferences: {
     emailNotifications: boolean;
     systemAlerts: boolean;
     darkMode: boolean;
   };
-  stats: {
-    totalUploads: number;
-    totalDuration: string;
-    commonTags: string[];
-  };
+  // stats?: {
+  //   totalUploads: number;
+  //   totalDuration: string;
+  //   commonTags: string[];
+  // };
 }
 
 export interface Activity {

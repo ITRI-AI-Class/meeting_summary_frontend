@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { SortAsc, SortDesc, Filter, CheckSquare, X } from 'lucide-react';
+import { CheckSquare, Filter, SortAsc, SortDesc } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 
 interface MeetingControlsProps {
   onSort: (direction: 'asc' | 'desc') => void;

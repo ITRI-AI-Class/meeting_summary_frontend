@@ -3,8 +3,9 @@ import { MeetingSummary } from '../types/meetingSummaries';
 
 interface MeetingSummariesContextType {
     meetingSummaries: MeetingSummary[];
-    addMeetingSummary: (newMeeting: MeetingSummary) => void;
+    addMeetingSummary: (meetingSummary: MeetingSummary) => void;
     sortMeetingSummaries: (direction: 'asc' | 'desc') => void;
+    refreshMeetingSummaries: (meetingSummaries: MeetingSummary[]) => void;
 }
 
 const MeetingSummariesContext = createContext<MeetingSummariesContextType | undefined>(undefined);
@@ -21,12 +22,16 @@ export function MeetingSummariesProvider({ children }: { children: React.ReactNo
         }));
       }, []);
 
-    const addMeetingSummary = useCallback((newMeeting: MeetingSummary) => {
-        setMeetingSummaries(prev => [...prev, newMeeting]);
+    const addMeetingSummary = useCallback((meetingSummary: MeetingSummary) => {
+        setMeetingSummaries(prev => [...prev, meetingSummary]);
+    }, []);
+
+    const refreshMeetingSummaries = useCallback((meetingSummaries: MeetingSummary[]) => {
+        setMeetingSummaries(() => [...meetingSummaries]);
     }, []);
 
     return (
-        <MeetingSummariesContext.Provider value={{ meetingSummaries, addMeetingSummary, sortMeetingSummaries }}>
+        <MeetingSummariesContext.Provider value={{ meetingSummaries, addMeetingSummary, sortMeetingSummaries, refreshMeetingSummaries }}>
             {children}
         </MeetingSummariesContext.Provider>
     );

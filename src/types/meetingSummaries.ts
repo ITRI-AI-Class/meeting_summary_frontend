@@ -1,17 +1,12 @@
-export enum MeetingSummaryStatus {
-    Processing = 'processing',
-    Completed = 'completed',
-    Failed = 'failed',
-}
-
 export interface MeetingSummary {
     id: string;
-    data: MeetingSummaryApiResponse;
     date: string;
-    duration?: string;
-    thumbnailUrl?: string;
-    videoUrl?: string;
-    status: MeetingSummaryStatus;
+    summary: Summary;
+    transcription: {
+        duration: number;
+        segments: Segment[];
+    };
+    thumbnailUrl: string;
 }
 
 interface Summary {
@@ -30,11 +25,5 @@ export interface Segment {
 
 export interface MeetingSummaryApiResponse {
     message: string;
-    data: {
-        summary: Summary;
-        transcription: {
-            duration: number;
-            segments: Segment[];
-        };
-    }
+    data: MeetingSummary;
 }

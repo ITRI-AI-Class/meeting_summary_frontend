@@ -1,15 +1,16 @@
+import { File, Upload } from 'lucide-react';
 import React, { useState } from 'react';
-import { Upload, File } from 'lucide-react';
-import { summarizeWithAudioFile } from '../services/api';
-import LoadingDialog from '../components/common/LoadingDialog';
 import { useNavigate } from 'react-router-dom';
-import { v4 as uuidv4 } from 'uuid';
+import LoadingDialog from '../components/common/LoadingDialog';
 import { useMeetingSummaries } from '../contexts/MeetingSummariesContext';
-import { MeetingSummaryApiResponse, MeetingSummaryStatus } from '../types/meetingSummaries';
+import { summarizeWithAudioFile } from '../services/api';
+import { MeetingSummaryApiResponse } from '../types/meetingSummaries';
+import { useAuth } from '../contexts/AuthContext';
 
 export function UploadPage() {
   const navigate = useNavigate();
-  const { meetingSummaries,addMeetingSummary } = useMeetingSummaries()!;
+  const { user } = useAuth();
+  const { addMeetingSummary } = useMeetingSummaries()!;
 
   const [isLoading, setIsLoading] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -41,37 +42,16 @@ export function UploadPage() {
     }
   };
 
-  function formatTime(seconds: number) {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const remainingSeconds = Math.floor(seconds % 60);
-  
-    if (hours > 0) {
-      return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
-    }
-  
-    return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
-  }
-
   const handleUploadClick = async () => {
     setIsLoading(true);
-    if (file) {
+    if (file && user) {
       try {
-        const result: MeetingSummaryApiResponse = await summarizeWithAudioFile(file);
+        const result: MeetingSummaryApiResponse = await summarizeWithAudioFile(user.id, file);
         // 你可以在這裡處理API回傳的結果，比如顯示總結
         console.log('Summarize result:', result);
-        const id = uuidv4();
-        addMeetingSummary({
-          id: id,
-          data: result,
-          date: new Date().toISOString().split('T')[0],
-          duration: formatTime(result.data.transcription.duration),
-          thumbnailUrl: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=80",
-          status: MeetingSummaryStatus.Completed,
-        });
-        console.log('Meeting Summary ID:', id);
+        addMeetingSummary(result.data);
         setIsLoading(false);
-        navigate(`/dashboard/meeting/${id}`);
+        navigate(`/dashboard/meeting/${result.data.id}`);
       } catch (error) {
         setIsLoading(false);
         console.error('Failed to upload the file:', error);

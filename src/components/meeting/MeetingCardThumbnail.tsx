@@ -3,7 +3,7 @@ import { Play } from 'lucide-react';
 
 interface MeetingCardThumbnailProps {
   thumbnailUrl?: string;
-  duration?: string;
+  duration?: number;
 }
 
 export function MeetingCardThumbnail({ thumbnailUrl, duration }: MeetingCardThumbnailProps) {
