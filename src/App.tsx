@@ -11,7 +11,7 @@ import { MeetingDetailsPage } from './pages/MeetingDetailsPage';
 import { ProfilePage } from './pages/ProfilePage';
 import { LoginPage } from './pages/LoginPage';
 import { MeetingSummariesProvider } from './contexts/MeetingSummariesContext';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 export default function App() {
   return (
