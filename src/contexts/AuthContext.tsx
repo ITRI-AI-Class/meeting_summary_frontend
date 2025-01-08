@@ -1,7 +1,10 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useCallback, useContext, useState } from 'react';
+import { User } from '../types/user';
+import { User as FirebaseUser } from 'firebase/auth';
 
 interface AuthContextType {
-  isAuthenticated: boolean;
+  user: User | null;
+  setGoogleUser: (firebaseUser: FirebaseUser) => void;
   login: (username: string, password: string) => boolean;
   logout: () => void;
 }
@@ -9,22 +12,46 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState<User|null>(null);
 
   const login = useCallback((username: string, password: string) => {
     if (username === 'user' && password === 'Useruser') {
-      setIsAuthenticated(true);
+      setUser({
+        id: 'default_userId',
+        name: 'default_userName',
+        email: 'default_userEmail',
+        preferences: {
+          emailNotifications: false,
+          systemAlerts: false,
+          darkMode: false,
+        },
+      });
       return true;
     }
     return false;
   }, []);
 
   const logout = useCallback(() => {
-    setIsAuthenticated(false);
+    setUser(null);
+  }, []);
+
+  const setGoogleUser = useCallback((firebaseUser: FirebaseUser) => {
+    const user: User = {
+      id: firebaseUser.uid,
+      name: firebaseUser.displayName || '',
+      email: firebaseUser.email || '',
+      avatarUrl: firebaseUser.photoURL || '',
+      preferences: {
+        emailNotifications: false,
+        systemAlerts: false,
+        darkMode: false,
+      },
+    }
+    setUser(user);
   }, []);
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ user, setGoogleUser, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

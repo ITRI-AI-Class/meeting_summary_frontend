@@ -2,7 +2,6 @@ import React from 'react';
 import { Calendar, CheckCircle } from 'lucide-react';
 import { MeetingSummary } from '../../types/meetingSummaries';
 import { MeetingCardThumbnail } from './MeetingCardThumbnail';
-import { MeetingCardStatus } from './MeetingCardStatus';
 
 interface MeetingCardProps {
   meetingSummary: MeetingSummary;
@@ -33,16 +32,16 @@ export function MeetingCard({
     >
       <MeetingCardThumbnail
         thumbnailUrl={meetingSummary.thumbnailUrl}
-        duration={meetingSummary.duration}
+        duration={meetingSummary.transcription.duration}
       />
 
       <div className="p-4">
         <h3 className="text-lg font-semibold text-gray-900 mb-3">
-          {meetingSummary.data.data.summary.title}
+          {meetingSummary.summary.title}
         </h3>
 
         <div className="flex flex-wrap gap-2 mb-4">
-          {meetingSummary.data.data.summary.tags.map((tag) => (
+          {meetingSummary.summary.tags.map((tag) => (
             <span
               key={tag}
               className="px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full text-sm font-medium"
@@ -56,8 +55,6 @@ export function MeetingCard({
           <Calendar className="w-4 h-4 mr-1" />
           <time>{new Date(meetingSummary.date).toLocaleDateString()}</time>
         </div>
-
-        <MeetingCardStatus status={meetingSummary.status} />
       </div>
 
       {showCheckbox && (

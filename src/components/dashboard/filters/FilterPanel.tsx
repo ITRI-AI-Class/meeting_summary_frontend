@@ -1,6 +1,5 @@
-import React from 'react';
-import { Filter, Users, Calendar, Flag } from 'lucide-react';
-import { MeetingStatus, MeetingPriority } from '../../../types/meeting';
+import { Filter, Flag } from 'lucide-react';
+import { MeetingPriority, MeetingStatus } from '../../../types/meeting';
 
 interface FilterPanelProps {
   onFilterChange: (filters: FilterOptions) => void;

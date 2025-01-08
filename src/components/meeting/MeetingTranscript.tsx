@@ -1,5 +1,3 @@
-import React from 'react';
-import { MeetingSegment } from '../../types/meeting';
 import { Segment } from '../../types/meetingSummaries';
 
 interface MeetingTranscriptProps {

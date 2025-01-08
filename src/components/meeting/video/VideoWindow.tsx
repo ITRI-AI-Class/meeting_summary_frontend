@@ -1,5 +1,5 @@
-import React, { useRef, useEffect } from 'react';
-import { Mic, MicOff } from 'lucide-react';
+import { MicOff } from 'lucide-react';
+import { useEffect, useRef } from 'react';
 
 interface VideoWindowProps {
   stream: MediaStream;

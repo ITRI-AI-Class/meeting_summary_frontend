@@ -6,26 +6,7 @@ import { ActivityFeed } from '../components/profile/ActivityFeed';
 import { ProfileSettings } from '../components/profile/ProfileSettings';
 import { EditProfileModal } from '../components/profile/EditProfileModal';
 import { useUser } from '../hooks/useUser';
-
-// Sample data - In a real app, this would come from an API
-const SAMPLE_USER = {
-  id: '1',
-  name: 'John Doe',
-  email: 'john@example.com',
-  avatarUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-  status: 'active',
-  language: 'en',
-  preferences: {
-    emailNotifications: true,
-    systemAlerts: true,
-    darkMode: false
-  },
-  stats: {
-    totalUploads: 12,
-    totalDuration: '8h 45m',
-    commonTags: ['Planning', 'Strategy', 'Review']
-  }
-} as User;
+import { useAuth } from '../contexts/AuthContext';
 
 const SAMPLE_ACTIVITIES: Activity[] = [
   {
@@ -51,7 +32,8 @@ const SAMPLE_ACTIVITIES: Activity[] = [
 ];
 
 export function ProfilePage() {
-  const { user, isLoading, error, updateUser } = useUser(SAMPLE_USER);
+  const { user: currentUser } = useAuth();
+  const { user, isLoading, error, updateUser } = useUser(currentUser!);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const handleEdit = () => {
@@ -68,7 +50,9 @@ export function ProfilePage() {
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-8">
-          <ProfileStats stats={user.stats} />
+          {/* 狀態 */}
+          {/* <ProfileStats stats={user.stats} /> */}
+          {/* 活動 */}
           <ActivityFeed activities={SAMPLE_ACTIVITIES} />
         </div>
         

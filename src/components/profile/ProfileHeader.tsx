@@ -17,9 +17,10 @@ export function ProfileHeader({ user, onEdit }: ProfileHeaderProps) {
             alt={user.name}
             className="w-16 h-16 rounded-full object-cover"
           />
-          <div className={`absolute bottom-0 right-0 w-3 h-3 rounded-full ${
+          {/* 頭像右下角的點 */}
+          {/* <div className={`absolute bottom-0 right-0 w-3 h-3 rounded-full ${
             user.status === 'active' ? 'bg-green-400' : 'bg-gray-400'
-          } border-2 border-white`} />
+          } border-2 border-white`} /> */}
         </div>
         
         <div>
