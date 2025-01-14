@@ -6,8 +6,29 @@ import { useMeetingSummaries } from '../contexts/MeetingSummariesContext';
 import { summarizeWithAudioFile } from '../services/api';
 import { MeetingSummaryApiResponse } from '../types/meetingSummaries';
 import { useAuth } from '../contexts/AuthContext';
+import { toast } from 'react-toastify';
 
 export function UploadPage() {
+  const showNotification = () => {
+    toast.success('會議總結已完成!', {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+    });
+  };
+  const showNotificationError = () => {
+    toast.error('上傳失敗!', {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+    });
+  }
   const navigate = useNavigate();
   const { user } = useAuth();
   const { addMeetingSummary } = useMeetingSummaries()!;
@@ -50,10 +71,12 @@ export function UploadPage() {
         // 你可以在這裡處理API回傳的結果，比如顯示總結
         console.log('Summarize result:', result);
         addMeetingSummary(result.data);
+        showNotification();
         setIsLoading(false);
         navigate(`/dashboard/meeting/${result.data.id}`);
       } catch (error) {
         setIsLoading(false);
+        showNotificationError();
         console.error('Failed to upload the file:', error);
       }
     }
