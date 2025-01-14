@@ -11,7 +11,8 @@ import { MeetingDetailsPage } from './pages/MeetingDetailsPage';
 import { ProfilePage } from './pages/ProfilePage';
 import { LoginPage } from './pages/LoginPage';
 import { MeetingSummariesProvider } from './contexts/MeetingSummariesContext';
-
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 export default function App() {
   return (
     <AuthProvider>
@@ -31,6 +32,7 @@ export default function App() {
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </BrowserRouter>
+          <ToastContainer />
         </MeetingSummariesProvider>
       </ThemeProvider>
     </AuthProvider>
