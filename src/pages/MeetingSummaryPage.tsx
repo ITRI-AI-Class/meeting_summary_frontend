@@ -6,7 +6,7 @@ import { MeetingTranscript } from '../components/meeting/MeetingTranscript';
 import { useMeetingSummaries } from '../contexts/MeetingSummariesContext';
 import { MeetingSummary } from '../types/meetingSummaries';
 
-export function MeetingDetailsPage() {
+export function MeetingSummaryPage() {
   const { id } = useParams();
   const videoRef = useRef<HTMLVideoElement>(null);
   const { meetingSummaries } = useMeetingSummaries()!;

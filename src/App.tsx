@@ -1,4 +1,3 @@
-import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
@@ -7,12 +6,14 @@ import { DashboardLayout } from './components/dashboard/DashboardLayout';
 import { WelcomePage } from './pages/WelcomePage';
 import { DashboardPage } from './pages/DashboardPage';
 import { UploadPage } from './pages/UploadPage';
-import { MeetingDetailsPage } from './pages/MeetingDetailsPage';
+import { MeetingSummaryPage } from './pages/MeetingSummaryPage';
 import { ProfilePage } from './pages/ProfilePage';
 import { LoginPage } from './pages/LoginPage';
 import { MeetingSummariesProvider } from './contexts/MeetingSummariesContext';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import MeetingPage from './pages/MeetingPage';
+
 export default function App() {
   return (
     <AuthProvider>
@@ -25,8 +26,8 @@ export default function App() {
               <Route path="/dashboard" element={<PrivateRoute><DashboardLayout /></PrivateRoute>}>
                 <Route index element={<DashboardPage />} />
                 <Route path="upload" element={<UploadPage />} />
-                <Route path="meeting/:id" element={<MeetingDetailsPage />} />
-                <Route path="meeting/new" element={<MeetingDetailsPage />} />
+                <Route path="meeting/:id" element={<MeetingSummaryPage />} />
+                <Route path="meeting/new" element={<MeetingPage />} />
                 <Route path="profile" element={<ProfilePage />} />
               </Route>
               <Route path="*" element={<Navigate to="/" replace />} />
