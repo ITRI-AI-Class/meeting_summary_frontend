@@ -25,7 +25,7 @@ const summarizeWithAudioFile = async (uid:string, file: File) => {
   console.log(formData);
 
   try {
-    const response = await axios.post('https://meetingai-qolj25j4ua-uc.a.run.app/summarize', formData, {
+    const response = await axios.post('http://127.0.0.1:5000/summarize', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
