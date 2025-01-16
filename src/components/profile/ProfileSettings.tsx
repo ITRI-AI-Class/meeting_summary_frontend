@@ -2,6 +2,7 @@ import React from 'react';
 import { Bell, Moon, Globe } from 'lucide-react';
 import { User } from '../../types/user';
 import { useTheme } from '../../contexts/ThemeContext';
+import { useTranslation } from 'react-i18next';
 
 interface ProfileSettingsProps {
   user: User;
@@ -9,6 +10,7 @@ interface ProfileSettingsProps {
 }
 
 export function ProfileSettings({ user, onUpdatePreferences }: ProfileSettingsProps) {
+  const { t } = useTranslation();
   const { isDarkMode, toggleDarkMode } = useTheme();
 
   const handleToggle = (key: keyof User['preferences']) => {
@@ -17,35 +19,37 @@ export function ProfileSettings({ user, onUpdatePreferences }: ProfileSettingsPr
     }
     onUpdatePreferences({
       ...user.preferences,
-      [key]: !user.preferences[key]
+      [key]: !user.preferences[key],
     });
   };
 
   return (
     <div className="space-y-6">
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Settings</h3>
-      
+      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+        {t('profile_settingsTitle')}
+      </h3>
+
       <div className="space-y-4">
         <SettingToggle
           icon={<Bell className="w-5 h-5" />}
-          label="Email Notifications"
-          description="Receive email updates about your meetings"
+          label={t('profile_settings.emailNotifications')}
+          description={t('profile_settings.emailNotificationsDesc')}
           checked={user.preferences.emailNotifications}
           onChange={() => handleToggle('emailNotifications')}
         />
-        
+
         <SettingToggle
           icon={<Globe className="w-5 h-5" />}
-          label="System Alerts"
-          description="Get notified when processing is complete"
+          label={t('profile_settings.systemAlerts')}
+          description={t('profile_settings.systemAlertsDesc')}
           checked={user.preferences.systemAlerts}
           onChange={() => handleToggle('systemAlerts')}
         />
-        
+
         <SettingToggle
           icon={<Moon className="w-5 h-5" />}
-          label="Dark Mode"
-          description="Switch between light and dark themes"
+          label={t('profile_settings.darkMode')}
+          description={t('profile_settings.darkModeDesc')}
           checked={isDarkMode}
           onChange={() => handleToggle('darkMode')}
         />
@@ -80,16 +84,14 @@ function SettingToggle({
       <div className="relative">
         <button
           onClick={onChange}
-          className={`
-            relative inline-flex h-6 w-11 items-center rounded-full transition-colors
-            ${checked ? 'bg-indigo-600' : 'bg-gray-200 dark:bg-gray-700'}
-          `}
+          className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+            checked ? 'bg-indigo-600' : 'bg-gray-200 dark:bg-gray-700'
+          }`}
         >
           <span
-            className={`
-              absolute inline-block h-4 w-4 transform rounded-full bg-white transition-transform
-              ${checked ? 'translate-x-6' : 'translate-x-1'}
-            `}
+            className={`absolute inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+              checked ? 'translate-x-6' : 'translate-x-1'
+            }`}
           />
         </button>
       </div>

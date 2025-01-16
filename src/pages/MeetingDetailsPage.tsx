@@ -5,13 +5,14 @@ import AudioPlayer from '../components/meeting/AudioPlayer';
 import { MeetingTranscript } from '../components/meeting/MeetingTranscript';
 import { useMeetingSummaries } from '../contexts/MeetingSummariesContext';
 import { MeetingSummary } from '../types/meetingSummaries';
+import { useTranslation } from 'react-i18next'; // 引入 useTranslation
 
 export function MeetingDetailsPage() {
   const { id } = useParams();
   const videoRef = useRef<HTMLVideoElement>(null);
   const { meetingSummaries } = useMeetingSummaries()!;
   const [meetingSummary, setMeetingSummary] = useState<MeetingSummary | null>(null);
-
+  const { t } = useTranslation(); // 使用 i18n 的翻譯功能
   useEffect(() => {
     const foundMeeting = meetingSummaries.find(meeting => meeting.id === id);
     if (foundMeeting) {
@@ -79,14 +80,14 @@ export function MeetingDetailsPage() {
 
         <div className="space-y-8">
           <section>
-            <h2 className="text-xl font-semibold text-gray-900 mb-3">Summary</h2>
+            <h2 className="text-xl font-semibold text-gray-900 mb-3">{t('Summary')}</h2>
             <p className="text-gray-600 bg-gray-50 p-4 rounded-lg">
               {meetingSummary.summary.content}
             </p>
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-gray-900 mb-3">Transcript</h2>
+            <h2 className="text-xl font-semibold text-gray-900 mb-3">{t('Transcript')}</h2>
             <div className="bg-white p-4 rounded-lg border border-gray-200 max-h-96 overflow-y-auto">
               <MeetingTranscript
                 segments={meetingSummary.transcription.segments}

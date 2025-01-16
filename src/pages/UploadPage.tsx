@@ -7,10 +7,12 @@ import { summarizeWithAudioFile } from '../services/api';
 import { MeetingSummaryApiResponse } from '../types/meetingSummaries';
 import { useAuth } from '../contexts/AuthContext';
 import { toast } from 'react-toastify';
+import { useTranslation } from 'react-i18next'; // 引入 useTranslation
 
 export function UploadPage() {
+  const { t } = useTranslation(); // 使用 i18n 的翻譯功能
   const showNotification = () => {
-    toast.success('會議總結已完成!', {
+    toast.success(t('upload_meeting_Btn.successNotification'), { // 使用翻譯鍵
       position: "top-right",
       autoClose: 3000,
       hideProgressBar: false,
@@ -19,8 +21,9 @@ export function UploadPage() {
       draggable: true,
     });
   };
+
   const showNotificationError = () => {
-    toast.error('上傳失敗!', {
+    toast.error(t('upload_meeting_Btn.errorNotification'), { // 使用翻譯鍵
       position: "top-right",
       autoClose: 3000,
       hideProgressBar: false,
@@ -28,7 +31,8 @@ export function UploadPage() {
       pauseOnHover: true,
       draggable: true,
     });
-  }
+  };
+
   const navigate = useNavigate();
   const { user } = useAuth();
   const { addMeetingSummary } = useMeetingSummaries()!;
@@ -68,8 +72,6 @@ export function UploadPage() {
     if (file && user) {
       try {
         const result: MeetingSummaryApiResponse = await summarizeWithAudioFile(user.id, file);
-        // 你可以在這裡處理API回傳的結果，比如顯示總結
-        console.log('Summarize result:', result);
         addMeetingSummary(result.data);
         showNotification();
         setIsLoading(false);
@@ -84,7 +86,7 @@ export function UploadPage() {
 
   return (
     <div className="max-w-2xl mx-auto">
-      <h1 className="text-3xl font-bold text-gray-900 mb-8">Upload Meeting Recording</h1>
+      <h1 className="text-3xl font-bold text-gray-900 mb-8">{t('upload_meeting_Btn.uploadMeetingRecording')}</h1>
 
       <label
         onDragOver={handleDragOver}
@@ -101,9 +103,9 @@ export function UploadPage() {
         <Upload className="w-12 h-12 text-gray-400 mb-4" />
 
         <div className="text-gray-600 text-center mb-4">
-          Drag and drop your video file here, or{' '}
+          {t('upload_meeting_Btn.dragAndDrop')}
           <div className="text-indigo-600 hover:text-indigo-500 cursor-pointer">
-            browse
+            {t('upload_meeting_Btn.browse')}
           </div>
         </div>
 
@@ -123,7 +125,7 @@ export function UploadPage() {
       </label>
 
       <button
-        onClick={handleUploadClick}  // 新增的事件處理器
+        onClick={handleUploadClick}
         disabled={!file}
         className={`
           mt-6 w-full py-3 px-4 rounded-lg
@@ -136,7 +138,7 @@ export function UploadPage() {
         `}
       >
         <Upload className="w-5 h-5" />
-        <span>Upload Recording</span>
+        <span>{t('upload_meeting_Btn.uploadRecording')}</span>
       </button>
       <LoadingDialog isVisible={isLoading} />
     </div>
