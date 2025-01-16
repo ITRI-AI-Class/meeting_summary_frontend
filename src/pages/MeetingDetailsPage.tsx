@@ -48,7 +48,15 @@ export function MeetingDetailsPage() {
         <div className="flex items-center space-x-4 mb-6">
           <div className="flex items-center text-gray-600">
             <Clock className="w-4 h-4 mr-1" />
-            <span>{meetingSummary.date}</span>
+            <span>
+              {new Date(meetingSummary.date).toLocaleString('zh-TW', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+              })}
+            </span>
           </div>
           <div className="flex items-center space-x-2">
             <Tag className="w-4 h-4 text-gray-600" />
