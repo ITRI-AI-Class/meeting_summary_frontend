@@ -13,6 +13,7 @@ import { LoginPage } from './pages/LoginPage';
 import { MeetingSummariesProvider } from './contexts/MeetingSummariesContext';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import './i18n';  // 引入 i18n 配置
 export default function App() {
   return (
     <AuthProvider>
