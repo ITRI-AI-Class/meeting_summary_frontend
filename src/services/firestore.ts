@@ -10,6 +10,7 @@ const fetchMeetingSummariesData = async (userId: string) => {
             const meetingSummary = doc.data() as MeetingSummary;
             items.push(meetingSummary);
         });
+        console.log("Fetched data:", items);
         return items;
     } catch (error) {
         console.error("Error fetching data: ", error);

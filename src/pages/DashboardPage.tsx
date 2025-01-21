@@ -19,21 +19,24 @@ export function DashboardPage() {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [isSelectMode, setIsSelectMode] = useState(false);
   const [selectedMeetingSummaries, setSelectedMeetingSummaries] = useState<string[]>([]);
+
   
   useEffect(() => {
-    const fetchData = async () => {
-        if (user) {
-            try {
-                const data = await fetchMeetingSummariesData(user.id);
-                refreshMeetingSummaries(data);
-            } catch (error) {
-                console.error("Error fetching meeting summaries:", error);
-            }
+    if (user) {
+      console.log('User ID:', user.id);
+      const fetchData = async () => {
+        try {
+          const data = await fetchMeetingSummariesData(user.id);
+          refreshMeetingSummaries(data); // 更新會議摘要
+          console.log('Fetched meeting summaries:', data);
+        } catch (error) {
+          console.error("Error fetching meeting summaries:", error);
         }
-    };
+      };
 
-    fetchData();
-}, [user]);
+      fetchData();
+    }
+  }, [user, refreshMeetingSummaries]);
 
   const toggleSelection = (meetingId: string) => {
     setSelectedMeetingSummaries((prev) =>

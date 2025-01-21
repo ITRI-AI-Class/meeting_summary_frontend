@@ -9,8 +9,23 @@ import { MeetingSummary } from '../types/meetingSummaries';
 export function MeetingDetailsPage() {
   const { id } = useParams();
   const videoRef = useRef<HTMLVideoElement>(null);
-  const { meetingSummaries } = useMeetingSummaries()!;
+  const { meetingSummaries , refreshMeetingSummaries } = useMeetingSummaries()!;
   const [meetingSummary, setMeetingSummary] = useState<MeetingSummary | null>(null);
+
+  // 從 localStorage 加載會議紀錄
+  useEffect(() => {
+    const storedData = localStorage.getItem('meetingSummaries');
+    if (storedData) {
+      refreshMeetingSummaries(JSON.parse(storedData));
+    }
+  }, [refreshMeetingSummaries]);
+
+  // 當 meetingSummaries 變動時，更新 localStorage
+  useEffect(() => {
+    if (meetingSummaries.length > 0) {
+      localStorage.setItem('meetingSummaries', JSON.stringify(meetingSummaries));
+    }
+  }, [meetingSummaries]);
 
   useEffect(() => {
     const foundMeeting = meetingSummaries.find(meeting => meeting.id === id);

@@ -40,21 +40,4 @@ const summarizeWithAudioFile = async (uid:string, file: File) => {
   }
 };
 
-
-// const summarizeWithAudioFile = async (file: File) => {
-//   const formData = new FormData();
-//   formData.append('audio', file);
-
-//   try {
-//     const meetingaiSummarizeAPI = httpsCallable(functions, 'meetingai');
-//     const response = await meetingaiSummarizeAPI(formData);
-//     const meetingSummaryResponse: MeetingSummaryApiResponse = response.data as MeetingSummaryApiResponse;
-//     return meetingSummaryResponse;
-//   } catch (error) {
-//     console.error('Error calling function:', error);
-//     throw error;
-//   }
-// };
-
-// 一次性導出兩個函式
 export { updateUserProfile, summarizeWithAudioFile };

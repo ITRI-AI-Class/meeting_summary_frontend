@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+// import React, { useEffect } from 'react';
+import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
@@ -9,7 +10,7 @@ import { DashboardPage } from './pages/DashboardPage';
 import { UploadPage } from './pages/UploadPage';
 import { MeetingDetailsPage } from './pages/MeetingDetailsPage';
 import { ProfilePage } from './pages/ProfilePage';
-import { LoginPage } from './pages/LoginPage';
+// import { LoginPage } from './pages/LoginPage';
 import { MeetingSummariesProvider } from './contexts/MeetingSummariesContext';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -21,7 +22,7 @@ export default function App() {
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<WelcomePage />} />
-              <Route path="/login" element={<LoginPage />} />
+              {/* <Route path="/login" element={<LoginPage />} /> */}
               <Route path="/dashboard" element={<PrivateRoute><DashboardLayout /></PrivateRoute>}>
                 <Route index element={<DashboardPage />} />
                 <Route path="upload" element={<UploadPage />} />

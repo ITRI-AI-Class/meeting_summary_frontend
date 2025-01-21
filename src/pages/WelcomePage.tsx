@@ -5,10 +5,12 @@ import { ParallaxHero } from '../components/welcome/ParallaxHero';
 import { FeatureCard } from '../components/welcome/FeatureCard';
 import { StepCard } from '../components/welcome/StepCard';
 import { Footer } from '../components/welcome/Footer';
+// import { useAuth } from '../contexts/AuthContext';
+import GoogleSignIn from '../components/login/GoogleSignIn';
+
 
 export function WelcomePage() {
   const navigate = useNavigate();
-
   return (
     <div className="min-h-screen">
       {/* Navigation */}
@@ -20,18 +22,25 @@ export function WelcomePage() {
               <span className="text-xl font-semibold text-gray-900">MeetingMind</span>
             </div>
             <div className="flex items-center space-x-4">
-              <button
+              {/* <button
                 onClick={() => navigate('/login')}
                 className="px-4 py-2 text-gray-700 hover:text-indigo-600 font-medium transition-colors"
               >
                 Login
-              </button>
+              </button> */}
               <button
-                onClick={() => navigate('/login')}
+                onClick={() => navigate('/dashboard')}
+                className="px-4 py-2 text-gray-700 hover:text-indigo-600 font-medium transition-colors"
+              >
+                Go to Dashboard
+              </button>
+              <GoogleSignIn /> {/* Google 登入元件 */}
+              {/* <button
+                onClick={() => navigate('/dashboard')}
                 className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-500 transition-colors"
               >
                 Start for Free
-              </button>
+              </button> */}
             </div>
           </div>
         </div>
@@ -50,13 +59,15 @@ export function WelcomePage() {
             使用AI驅動的文字記錄、摘要和見解，轉變你的會議方式。
             專注於對話，我們來處理文檔。
           </p>
-          <button
+          {/* <button
             onClick={() => navigate('/login')}
             className="px-8 py-4 bg-indigo-600 text-white rounded-full text-lg font-medium hover:bg-indigo-500 transition-colors inline-flex items-center"
           >
             免費開始
             <ArrowRight className="ml-2 w-5 h-5" />
-          </button>
+          </button> */}
+          {/* 修改為直接進行 Google 登入 */}
+          <GoogleSignIn />
         </div>
       </div>
 
