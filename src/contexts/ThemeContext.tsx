@@ -16,8 +16,10 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (isDarkMode) {
       document.documentElement.classList.add('dark');
+      localStorage.setItem("dark", isDarkMode.toString()); // 儲存深色設定
     } else {
       document.documentElement.classList.remove('dark');
+      localStorage.setItem("dark", isDarkMode.toString()); // 儲存深色設定
     }
   }, [isDarkMode]);
 
