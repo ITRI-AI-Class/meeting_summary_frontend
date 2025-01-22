@@ -1,60 +1,68 @@
-// apiService.js
-import { MeetingSummaryApiResponse } from '../types/meetingSummaries';
-import { User } from '../types/user';
 import axios from 'axios';
 
-const API_DELAY = 1000; // Simulate API delay
-
-async function updateUserProfile(user: User, data: Partial<User>): Promise<User> {
-  // Simulate API call
-  await new Promise(resolve => setTimeout(resolve, API_DELAY));
-
-  // In a real app, this would be an API call
-  return {
-    ...user,
-    ...data,
-  } as User;
+// 定義自訂的請求配置類型
+interface CustomAxiosRequestConfig extends Axios.AxiosXHRConfig<string> {
+  _retry?: boolean; // 用於標記重試的屬性
+  signal?: AbortSignal; // 用於取消請求的信號
 }
 
-// API 呼叫函式，用於上傳音訊檔案並獲得摘要
-const summarizeWithAudioFile = async (uid:string, file: File) => {
-  const formData = new FormData();
-  formData.append('uid', uid);
-  formData.append('audio', file);
+var env = import.meta.env.MODE;
 
-  console.log(formData);
+const instance = axios.create({
+  baseURL: env === 'localtest' ? 'http://localhost:6080/api/' : env === 'dev' ? 'https://192.168.10.75:6080/api/' : '/api/',
+  timeout: 30000,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
 
-  try {
-    const response = await axios.post('http://127.0.0.1:5000/summarize', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-    console.log(response.data);
-    // const meetingSummaryResponse: MeetingSummaryApiResponse = JSON.parse(response.data as string);
-    const meetingSummaryResponse: MeetingSummaryApiResponse = response.data as MeetingSummaryApiResponse;
-    return meetingSummaryResponse;
-  } catch (error) {
-    console.error('Error uploading file:', error);
-    throw error;
+// 管理全局的 AbortController
+let abortController: AbortController | null = null;
+
+// 請求攔截器
+instance.interceptors.request.use(
+  (config: CustomAxiosRequestConfig) => {
+    // 設置取消請求
+    if (!abortController) {
+      abortController = new AbortController();
+    }
+    config.signal = abortController.signal;
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// 響應攔截器
+instance.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  async (error) => {
+    const originalRequest = error.config as CustomAxiosRequestConfig;
+
+    if (error.response) {
+      switch (error.response.status) {
+        case 401:
+          // 可處理 401 錯誤
+          break;
+        case 500:
+          // 可處理 500 錯誤
+          break;
+      }
+    }
+
+    return Promise.reject(error);
+  }
+);
+
+// 重置取消控制器
+export const resetAbortController = () => {
+  if (abortController) {
+    abortController.abort();
+    abortController = new AbortController();
   }
 };
 
-
-// const summarizeWithAudioFile = async (file: File) => {
-//   const formData = new FormData();
-//   formData.append('audio', file);
-
-//   try {
-//     const meetingaiSummarizeAPI = httpsCallable(functions, 'meetingai');
-//     const response = await meetingaiSummarizeAPI(formData);
-//     const meetingSummaryResponse: MeetingSummaryApiResponse = response.data as MeetingSummaryApiResponse;
-//     return meetingSummaryResponse;
-//   } catch (error) {
-//     console.error('Error calling function:', error);
-//     throw error;
-//   }
-// };
-
-// 一次性導出兩個函式
-export { updateUserProfile, summarizeWithAudioFile };
+export default instance;

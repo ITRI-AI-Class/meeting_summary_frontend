@@ -1,6 +1,6 @@
 import React from 'react';
 import { Calendar, CheckCircle } from 'lucide-react';
-import { MeetingSummary } from '../../types/meetingSummaries';
+import { MeetingSummary } from '../../types/meetingSummary';
 import { MeetingCardThumbnail } from './MeetingCardThumbnail';
 
 interface MeetingCardProps {

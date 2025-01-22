@@ -30,7 +30,7 @@ export function DashboardLayout() {
   const menuItems = [
     { icon: <FileText className="w-5 h-5" />, label: t("meetingNotes"), path: "/dashboard" },
     { icon: <Upload className="w-5 h-5" />, label: t("upload_meeting"), path: "/dashboard/upload" },
-    { icon: <Video className="w-5 h-5" />, label: t("new_meeting"), path: "/dashboard/meeting/new" },
+    { icon: <Video className="w-5 h-5" />, label: t("new_meeting"), path: "/dashboard/meeting" },
   ];
 
   const handleSetting = () => {

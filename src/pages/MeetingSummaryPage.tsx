@@ -3,17 +3,19 @@ import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import AudioPlayer from '../components/meeting/AudioPlayer';
 import { MeetingTranscript } from '../components/meeting/MeetingTranscript';
+import { MeetingSummary } from '../types/meetingSummary';
 import { useMeetingSummaries } from '../contexts/MeetingSummariesContext';
-import { MeetingSummary } from '../types/meetingSummaries';
 import { useTranslation } from 'react-i18next'; // 引入 useTranslation
 
-export function MeetingDetailsPage() {
+export function MeetingSummaryPage() {
   const { id } = useParams();
   const videoRef = useRef<HTMLVideoElement>(null);
   const { meetingSummaries } = useMeetingSummaries()!;
   const [meetingSummary, setMeetingSummary] = useState<MeetingSummary | null>(null);
   const { t } = useTranslation(); // 使用 i18n 的翻譯功能
   useEffect(() => {
+    console.log(id);
+    console.log(meetingSummaries);
     const foundMeeting = meetingSummaries.find(meeting => meeting.id === id);
     if (foundMeeting) {
       setMeetingSummary(foundMeeting);

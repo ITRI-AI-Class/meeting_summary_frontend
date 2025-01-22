@@ -1,12 +1,10 @@
 import { File, Upload } from 'lucide-react';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import LoadingDialog from '../components/common/LoadingDialog';
-import { useMeetingSummaries } from '../contexts/MeetingSummariesContext';
-import { summarizeWithAudioFile } from '../services/api';
-import { MeetingSummaryApiResponse } from '../types/meetingSummaries';
-import { useAuth } from '../contexts/AuthContext';
 import { toast } from 'react-toastify';
+import LoadingDialog from '../components/common/LoadingDialog';
+import { useAuth } from '../contexts/AuthContext';
+import { useMeetingSummaries } from '../contexts/MeetingSummariesContext';
 import { useTranslation } from 'react-i18next'; // 引入 useTranslation
 
 export function UploadPage() {
@@ -35,7 +33,7 @@ export function UploadPage() {
 
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { addMeetingSummary } = useMeetingSummaries()!;
+  const { summarizeMeeting } = useMeetingSummaries()!;
 
   const [isLoading, setIsLoading] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -71,11 +69,10 @@ export function UploadPage() {
     setIsLoading(true);
     if (file && user) {
       try {
-        const result: MeetingSummaryApiResponse = await summarizeWithAudioFile(user.id, file);
-        addMeetingSummary(result.data);
+        const result = await summarizeMeeting(user.id, file, undefined);
         showNotification();
         setIsLoading(false);
-        navigate(`/dashboard/meeting/${result.data.id}`);
+        navigate(`/dashboard/meetingSummary/${result.summary.id}`);
       } catch (error) {
         setIsLoading(false);
         showNotificationError();

@@ -1,35 +1,29 @@
-import { Upload, Video, Globe } from "lucide-react";
+
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next"; // 引入語言切換
 import { useNavigate } from "react-router-dom";
-import { Button } from "../components/common/Button";
 import { DateSearch } from "../components/meeting/DateSearch";
 import { MeetingCard } from "../components/meeting/MeetingCard";
 import { MeetingControls } from "../components/meeting/MeetingControls";
 import { MeetingSelectionProvider } from "../components/meeting/MeetingSelectionContext.tsx";
-import { useMeetingSummaries } from "../contexts/MeetingSummariesContext.tsx";
-import { fetchMeetingSummariesData } from "../services/firestore.ts";
 import { useAuth } from "../contexts/AuthContext.tsx";
-import { useTranslation } from "react-i18next"; // 引入語言切換
+import { useMeetingSummaries } from "../contexts/MeetingSummariesContext.tsx";
 
 export function DashboardPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { meetingSummaries, sortMeetingSummaries, refreshMeetingSummaries } =
-    useMeetingSummaries()!;
+  const { meetingSummaries, sortMeetingSummaries, fetchMeetingSummaries } = useMeetingSummaries()!;
 
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [isSelectMode, setIsSelectMode] = useState(false);
-  const [selectedMeetingSummaries, setSelectedMeetingSummaries] = useState<
-    string[]
-  >([]);
+  const [selectedMeetingSummaries, setSelectedMeetingSummaries] = useState<string[]>([]);
   const { t, i18n } = useTranslation(); // 初始化語言切換
 
   useEffect(() => {
     const fetchData = async () => {
       if (user) {
         try {
-          const data = await fetchMeetingSummariesData(user.id);
-          refreshMeetingSummaries(data);
+          await fetchMeetingSummaries(user.id);
         } catch (error) {
           console.error("Error fetching meeting summaries:", error);
         }
@@ -37,7 +31,7 @@ export function DashboardPage() {
     };
 
     fetchData();
-  }, [user]);
+  }, [user, fetchMeetingSummaries]); // 增加依賴 fetchMeetingSummaries，避免遺漏更新
 
   const toggleSelection = (meetingId: string) => {
     setSelectedMeetingSummaries((prev) =>
@@ -56,6 +50,7 @@ export function DashboardPage() {
   }, [meetingSummaries]);
 
   const filteredMeetings = useMemo(() => {
+    console.log(meetingSummaries);
     if (selectedTags.length === 0) return meetingSummaries;
     return meetingSummaries.filter((meetingSummary) =>
       selectedTags.some((tag) => meetingSummary.summary.tags.includes(tag))
@@ -99,9 +94,7 @@ export function DashboardPage() {
             <MeetingCard
               key={meetingSummary.id}
               meetingSummary={meetingSummary}
-              onClick={() =>
-                navigate(`/dashboard/meeting/${meetingSummary.id}`)
-              }
+              onClick={() => navigate(`/dashboard/meetingSummary/${meetingSummary.id}`)}
               isSelected={selectedMeetingSummaries.includes(meetingSummary.id)}
               showCheckbox={isSelectMode}
               toggleSelection={() => toggleSelection(meetingSummary.id)}

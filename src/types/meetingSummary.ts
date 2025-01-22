@@ -24,6 +24,5 @@ export interface Segment {
 }
 
 export interface MeetingSummaryApiResponse {
-    message: string;
-    data: MeetingSummary;
+    summary: MeetingSummary
 }

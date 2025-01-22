@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { User } from '../types/user';
-import { updateUserProfile } from '../services/api';
+import UserService from '../services/UserService';
 
 export function useUser(initialUser: User) {
   const [user, setUser] = useState<User>(initialUser);
@@ -13,7 +13,7 @@ export function useUser(initialUser: User) {
     setError(null);
     
     try {
-      const updatedUser = await updateUserProfile(user, data);
+      const updatedUser = await UserService.updateUserProfile(user, data);
       console.log(updatedUser);
       setUser(updatedUser);
       return true;
