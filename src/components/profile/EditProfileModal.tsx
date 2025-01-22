@@ -59,13 +59,13 @@ export function EditProfileModal({
             </div>
           )}
 
-          <EditProfileForm
+          {/* <EditProfileForm
             user={user}
             formData={formData}
             isLoading={isLoading}
             onChange={setFormData}
             onSubmit={handleSubmit}
-          />
+          /> */}
         </div>
       </div>
 

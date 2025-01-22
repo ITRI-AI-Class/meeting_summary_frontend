@@ -5,12 +5,14 @@ import AudioPlayer from '../components/meeting/AudioPlayer';
 import { MeetingTranscript } from '../components/meeting/MeetingTranscript';
 import { MeetingSummary } from '../types/meetingSummary';
 import { useMeetingSummaries } from '../contexts/MeetingSummariesContext';
+import { useTranslation } from 'react-i18next'; // 引入 useTranslation
 
 export function MeetingSummaryPage() {
   const { id } = useParams();
   const videoRef = useRef<HTMLVideoElement>(null);
   const { meetingSummaries } = useMeetingSummaries()!;
   const [meetingSummary, setMeetingSummary] = useState<MeetingSummary | null>(null);
+  const { t } = useTranslation(); // 使用 i18n 的翻譯功能
   useEffect(() => {
     console.log(id);
     console.log(meetingSummaries);
@@ -48,7 +50,15 @@ export function MeetingSummaryPage() {
         <div className="flex items-center space-x-4 mb-6">
           <div className="flex items-center text-gray-600">
             <Clock className="w-4 h-4 mr-1" />
-            <span>{meetingSummary.date}</span>
+            <span>
+              {new Date(meetingSummary.date).toLocaleString('zh-TW', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+              })}
+            </span>
           </div>
           <div className="flex items-center space-x-2">
             <Tag className="w-4 h-4 text-gray-600" />
@@ -80,14 +90,14 @@ export function MeetingSummaryPage() {
 
         <div className="space-y-8">
           <section>
-            <h2 className="text-xl font-semibold text-gray-900 mb-3">Summary</h2>
+            <h2 className="text-xl font-semibold text-gray-900 mb-3">{t('Summary')}</h2>
             <p className="text-gray-600 bg-gray-50 p-4 rounded-lg">
               {meetingSummary.summary.content}
             </p>
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-gray-900 mb-3">Transcript</h2>
+            <h2 className="text-xl font-semibold text-gray-900 mb-3">{t('Transcript')}</h2>
             <div className="bg-white p-4 rounded-lg border border-gray-200 max-h-96 overflow-y-auto">
               <MeetingTranscript
                 segments={meetingSummary.transcription.segments}

@@ -14,6 +14,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import MeetingRoomPage from './pages/MeetingRoomPage';
 
+import './i18n';  // 引入 i18n 配置
 export default function App() {
   return (
     <AuthProvider>

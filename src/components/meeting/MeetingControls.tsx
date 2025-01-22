@@ -1,5 +1,6 @@
 import { CheckSquare, Filter, SortAsc, SortDesc } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface MeetingControlsProps {
   onSort: (direction: 'asc' | 'desc') => void;
@@ -16,6 +17,7 @@ export function MeetingControls({
   availableTags,
   onTagsChange,
 }: MeetingControlsProps) {
+  const { t } = useTranslation();
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [isSelectMode, setIsSelectMode] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -59,7 +61,7 @@ export function MeetingControls({
       <button
         onClick={handleSort}
         className="inline-flex items-center px-2.5 py-1.5 bg-white hover:bg-gray-50 text-gray-700 rounded-md border border-gray-300 shadow-sm"
-        title={sortDirection === 'desc' ? 'Newest first' : 'Oldest first'}
+        title={sortDirection === 'desc' ? t('newestFirst') : t('oldestFirst')}
       >
         {sortDirection === 'desc' ? (
           <SortDesc className="w-4 h-4" />
@@ -75,7 +77,7 @@ export function MeetingControls({
             ? 'bg-indigo-50 text-indigo-700 border-indigo-200'
             : 'bg-white hover:bg-gray-50 text-gray-700 border-gray-300'
         }`}
-        title="Select meetings"
+        title={t('selectMeetings')}
       >
         <CheckSquare className="w-4 h-4" />
       </button>
@@ -88,7 +90,7 @@ export function MeetingControls({
               ? 'bg-indigo-50 text-indigo-700 border-indigo-200'
               : 'bg-white hover:bg-gray-50 text-gray-700 border-gray-300'
           }`}
-          title="Filter by tags"
+          title={t('filterByTags')}
         >
           <Filter className="w-4 h-4" />
           {selectedTags.length > 0 && (
@@ -99,13 +101,15 @@ export function MeetingControls({
         {isFilterOpen && (
           <div className="absolute top-full right-0 mt-1 w-56 max-h-64 bg-white rounded-md shadow-lg border border-gray-200 overflow-hidden z-10">
             <div className="p-2 border-b border-gray-100 flex justify-between items-center">
-              <span className="text-sm font-medium text-gray-700">Filter by tags</span>
+              <span className="text-sm font-medium text-gray-700">
+                {t('filterByTags')}
+              </span>
               {selectedTags.length > 0 && (
                 <button
                   onClick={clearFilters}
                   className="text-xs text-gray-500 hover:text-gray-700"
                 >
-                  Clear all
+                  {t('clearAll')}
                 </button>
               )}
             </div>
