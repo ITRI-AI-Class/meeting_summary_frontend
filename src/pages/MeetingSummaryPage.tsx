@@ -3,16 +3,17 @@ import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import AudioPlayer from '../components/meeting/AudioPlayer';
 import { MeetingTranscript } from '../components/meeting/MeetingTranscript';
+import { MeetingSummary } from '../types/meetingSummary';
 import { useMeetingSummaries } from '../contexts/MeetingSummariesContext';
-import { MeetingSummary } from '../types/meetingSummaries';
 
 export function MeetingSummaryPage() {
   const { id } = useParams();
   const videoRef = useRef<HTMLVideoElement>(null);
   const { meetingSummaries } = useMeetingSummaries()!;
   const [meetingSummary, setMeetingSummary] = useState<MeetingSummary | null>(null);
-
   useEffect(() => {
+    console.log(id);
+    console.log(meetingSummaries);
     const foundMeeting = meetingSummaries.find(meeting => meeting.id === id);
     if (foundMeeting) {
       setMeetingSummary(foundMeeting);

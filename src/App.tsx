@@ -12,29 +12,33 @@ import { LoginPage } from './pages/LoginPage';
 import { MeetingSummariesProvider } from './contexts/MeetingSummariesContext';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import MeetingPage from './pages/MeetingPage';
+import MeetingRoomPage from './pages/MeetingRoomPage';
 
 export default function App() {
   return (
     <AuthProvider>
       <ThemeProvider>
-        <MeetingSummariesProvider>
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<WelcomePage />} />
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/dashboard" element={<PrivateRoute><DashboardLayout /></PrivateRoute>}>
-                <Route index element={<DashboardPage />} />
-                <Route path="upload" element={<UploadPage />} />
-                <Route path="meeting/:id" element={<MeetingSummaryPage />} />
-                <Route path="meeting/new" element={<MeetingPage />} />
-                <Route path="profile" element={<ProfilePage />} />
-              </Route>
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-          </BrowserRouter>
-          <ToastContainer />
-        </MeetingSummariesProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<WelcomePage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/dashboard" element={
+              <PrivateRoute>
+                <MeetingSummariesProvider>
+                  <DashboardLayout />
+                </ MeetingSummariesProvider>
+              </PrivateRoute>}
+            >
+              <Route index element={<DashboardPage />} />
+              <Route path="upload" element={<UploadPage />} />
+              <Route path="meetingSummary/:id" element={<MeetingSummaryPage />} />
+              <Route path="profile" element={<ProfilePage />} />
+              <Route path="meeting" element={<MeetingRoomPage />} />
+            </Route>
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </BrowserRouter>
+        <ToastContainer />
       </ThemeProvider>
     </AuthProvider>
   );

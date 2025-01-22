@@ -1,4 +1,4 @@
-import { Segment } from '../../types/meetingSummaries';
+import { Segment } from '../../types/meetingSummary';
 
 interface MeetingTranscriptProps {
   segments: Segment[];

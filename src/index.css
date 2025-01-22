@@ -1,3 +1,37 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+
+    /* Excerpt of the color palette  */
+    :root {
+        /* --lk-fg: #f91f31;
+        --lk-fg-secondary: #f91f31;
+        --lk-fg-tertiary: #f91f31;
+
+        --lk-bg: #f91f31;
+        --lk-bg-secondary: #f91f31;
+        --lk-bg-tertiary: #f91f31;
+
+        --lk-accent-fg: #fff;
+        --lk-accent-bg: #1f8cf9;
+
+        --lk-danger-fg: #fff;
+        --lk-danger: #f91f31;
+        --lk-danger-text: #6d0311;
+        --lk-danger-bg: #fecdd4;
+
+        --lk-success-fg: #fff;
+        --lk-success: #1ff968;
+        --lk-success-text: #036d26;
+        --lk-success-bg: #cdfedd;
+
+        --lk-control-fg: var(--fg);
+        --lk-control-bg: var(--bg-secondary);
+
+        --lk-connection-excellent: #06db4d;
+        --lk-connection-good: #f9b11f;
+        --lk-connection-poor: #f91f31; */
+    }
+}

@@ -1,16 +1,14 @@
 import { File, Upload } from 'lucide-react';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import LoadingDialog from '../components/common/LoadingDialog';
-import { useMeetingSummaries } from '../contexts/MeetingSummariesContext';
-import { summarizeWithAudioFile } from '../services/api';
-import { MeetingSummaryApiResponse } from '../types/meetingSummaries';
-import { useAuth } from '../contexts/AuthContext';
 import { toast } from 'react-toastify';
+import LoadingDialog from '../components/common/LoadingDialog';
+import { useAuth } from '../contexts/AuthContext';
+import { useMeetingSummaries } from '../contexts/MeetingSummariesContext';
 
 export function UploadPage() {
   const showNotification = () => {
-    toast.success('會議總結已完成!', {
+    toast.success('摘要生成完成', {
       position: "top-right",
       autoClose: 3000,
       hideProgressBar: false,
@@ -20,7 +18,7 @@ export function UploadPage() {
     });
   };
   const showNotificationError = () => {
-    toast.error('上傳失敗!', {
+    toast.error('摘要生成失敗', {
       position: "top-right",
       autoClose: 3000,
       hideProgressBar: false,
@@ -31,7 +29,7 @@ export function UploadPage() {
   }
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { addMeetingSummary } = useMeetingSummaries()!;
+  const { summarizeMeeting } = useMeetingSummaries()!;
 
   const [isLoading, setIsLoading] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -67,13 +65,10 @@ export function UploadPage() {
     setIsLoading(true);
     if (file && user) {
       try {
-        const result: MeetingSummaryApiResponse = await summarizeWithAudioFile(user.id, file);
-        // 你可以在這裡處理API回傳的結果，比如顯示總結
-        console.log('Summarize result:', result);
-        addMeetingSummary(result.data);
+        const result = await summarizeMeeting(user.id, file, undefined);
         showNotification();
         setIsLoading(false);
-        navigate(`/dashboard/meeting/${result.data.id}`);
+        navigate(`/dashboard/meetingSummary/${result.summary.id}`);
       } catch (error) {
         setIsLoading(false);
         showNotificationError();

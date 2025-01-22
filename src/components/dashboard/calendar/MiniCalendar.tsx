@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { Meeting } from '../../../types/meeting';
+import { Meeting } from '../../../types/meetingRecording';
 
 interface MiniCalendarProps {
   meetings: Meeting[];

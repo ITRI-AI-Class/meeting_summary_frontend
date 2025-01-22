@@ -1,59 +1,10 @@
 import { useState, useCallback } from 'react';
-import { MeetingSummary, MeetingSummaryStatus } from '../types/meetingSummaries';
+import { MeetingSummary } from '../types/meetingSummary';
+import AIService from '../services/AIService';
+import FirestoreService from '../services/FirestoreService';
 
-const SAMPLE_MEETING_SUMMARIES: MeetingSummary[] = [
-  {
-    id: "ba58ea87-db21-41f2-8a85-6946cf6d753c",
-    data: {
-      summary: {
-        title: "Q1 2024 Planning Session",
-        atmosphere: [],
-        content: '',
-        tags: ["Planning", "Strategy"],
-      },
-      segments: []
-    },
-    date: "2024-03-15",
-    duration: "1:30:00",
-    thumbnailUrl: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80",
-    status: MeetingSummaryStatus.Completed,
-  },
-  {
-    id: "1ceb5486-43b7-4736-92d7-660e4ba53e75",
-    data: {
-      summary: {
-        title: "Product Team Sync",
-        atmosphere: [],
-        content: '',
-        tags: ["Product", "Development"],
-      },
-      segments: []
-    },
-    date: "2024-03-14",
-    duration: "45:00",
-    thumbnailUrl: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&q=80",
-    status: MeetingSummaryStatus.Processing,
-  },
-  {
-    id: "9ab8c121-a778-408b-b112-b28ce881d288",
-    data: {
-      summary: {
-        title: "Marketing Campaign Review",
-        atmosphere: [],
-        content: '',
-        tags: ["Marketing", "Review"],
-      },
-      segments: []
-    },
-    date: "2024-03-13",
-    duration: "1:00:00",
-    thumbnailUrl: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=80",
-    status: MeetingSummaryStatus.Completed,
-  }
-];
-
-export function useMeetingSummaries() {
-  const [meetingSummaries, setMeetingSummaries] = useState<MeetingSummary[]>(SAMPLE_MEETING_SUMMARIES);
+export default function useMeetingSummaries() {
+  const [meetingSummaries, setMeetingSummaries] = useState<MeetingSummary[]>([]);
 
   const sortMeetingSummaries = useCallback((direction: 'asc' | 'desc') => {
     setMeetingSummaries(prev => [...prev].sort((a, b) => {
@@ -73,9 +24,35 @@ export function useMeetingSummaries() {
     });
   }, []);
 
+  const summarizeMeeting = useCallback(async (uid: string, file: File) => {
+    const formData = new FormData();
+    formData.append('uid', uid);
+    formData.append('file', file);
+    try {
+      const response = await AIService.summarize(formData);
+      addMeetingSummary(response.data.summary);
+      return response.data;
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      throw error;
+    }
+  }, [])
+
+  const fetchMeetingSummaries = useCallback(async (uid: string) => {
+    try {
+      const data = await FirestoreService.fetchMeetingSummariesData(uid);
+      console.log('Meeting Summaries2:', data);
+      setMeetingSummaries(data);
+    } catch (error) {
+      console.error("Error fetching meeting summaries:", error);
+    }
+  }, []);
+
   return {
     meetingSummaries,
     sortMeetingSummaries,
     addMeetingSummary, // 將新增方法返回
+    fetchMeetingSummaries,
+    summarizeMeeting,
   };
 }

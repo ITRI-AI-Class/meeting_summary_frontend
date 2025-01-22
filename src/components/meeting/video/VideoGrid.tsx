@@ -1,6 +1,6 @@
 import React from 'react';
 import { VideoWindow } from './VideoWindow';
-import { Participant } from '../../../types/meeting';
+import { Participant } from '../../../types/meetingRecording';
 
 interface VideoGridProps {
   participants: Participant[];

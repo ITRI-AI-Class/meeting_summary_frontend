@@ -6,34 +6,31 @@ import { DateSearch } from '../components/meeting/DateSearch';
 import { MeetingCard } from '../components/meeting/MeetingCard';
 import { MeetingControls } from '../components/meeting/MeetingControls';
 import { MeetingSelectionProvider } from '../components/meeting/MeetingSelectionContext.tsx'; // Import the provider and hook
-import { useMeetingSummaries } from '../contexts/MeetingSummariesContext.tsx';
-import { fetchMeetingSummariesData } from '../services/firestore.ts';
 import { useAuth } from '../contexts/AuthContext.tsx';
-
+import { useMeetingSummaries } from '../contexts/MeetingSummariesContext.tsx';
 
 export function DashboardPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { meetingSummaries, sortMeetingSummaries, refreshMeetingSummaries } = useMeetingSummaries()!;
+  const { meetingSummaries, sortMeetingSummaries, fetchMeetingSummaries } = useMeetingSummaries()!;
 
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [isSelectMode, setIsSelectMode] = useState(false);
   const [selectedMeetingSummaries, setSelectedMeetingSummaries] = useState<string[]>([]);
-  
+
   useEffect(() => {
     const fetchData = async () => {
-        if (user) {
-            try {
-                const data = await fetchMeetingSummariesData(user.id);
-                refreshMeetingSummaries(data);
-            } catch (error) {
-                console.error("Error fetching meeting summaries:", error);
-            }
+      if (user) {
+        try {
+          await fetchMeetingSummaries(user.id);
+        } catch (error) {
+          console.error("Error fetching meeting summaries:", error);
         }
+      }
     };
 
     fetchData();
-}, [user]);
+  }, [user, fetchMeetingSummaries]); // 增加依賴 fetchMeetingSummaries，避免遺漏更新
 
   const toggleSelection = (meetingId: string) => {
     setSelectedMeetingSummaries((prev) =>
@@ -50,6 +47,7 @@ export function DashboardPage() {
   }, [meetingSummaries]);
 
   const filteredMeetings = useMemo(() => {
+    console.log(meetingSummaries);
     if (selectedTags.length === 0) return meetingSummaries;
     return meetingSummaries.filter(meetingSummary =>
       selectedTags.some(tag => meetingSummary.summary.tags.includes(tag))
@@ -57,7 +55,7 @@ export function DashboardPage() {
   }, [meetingSummaries, selectedTags]);
 
   const handleNewMeeting = () => {
-    navigate('/dashboard/meeting/new');
+    navigate('/dashboard/meeting');
   };
 
   const handleSearch = (startDate: string, endDate: string) => {
@@ -100,14 +98,13 @@ export function DashboardPage() {
         </div>
       </div>
 
-
       <MeetingSelectionProvider>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredMeetings.map((meetingSummary) => (
             <MeetingCard
               key={meetingSummary.id}
               meetingSummary={meetingSummary}
-              onClick={() => navigate(`/dashboard/meeting/${meetingSummary.id}`)}
+              onClick={() => navigate(`/dashboard/meetingSummary/${meetingSummary.id}`)}
               isSelected={selectedMeetingSummaries.includes(meetingSummary.id)}
               showCheckbox={isSelectMode}
               toggleSelection={() => toggleSelection(meetingSummary.id)}
