@@ -10,6 +10,7 @@ import { UploadPage } from './pages/UploadPage';
 import { MeetingDetailsPage } from './pages/MeetingDetailsPage';
 import { ProfilePage } from './pages/ProfilePage';
 import { LoginPage } from './pages/LoginPage';
+import ChatWidget from './components/ChatWidget';
 
 export default function App() {
   return (

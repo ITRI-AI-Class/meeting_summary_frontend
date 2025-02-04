@@ -7,6 +7,7 @@ import { DateSearch } from '../components/meeting/DateSearch';
 import { MeetingControls } from '../components/meeting/MeetingControls';
 import { useMeetingSummaries } from '../hooks/useMeetingSummaries.ts';
 import { MeetingSelectionProvider, useMeetingSelection } from '../components/meeting/MeetingSelectionContext.tsx'; // Import the provider and hook
+import ChatWidget from '../components/ChatWidget.tsx';
 
 
 export function DashboardPage() {

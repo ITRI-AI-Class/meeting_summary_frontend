@@ -2,6 +2,7 @@ import React from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { Users, FileText, LogOut } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
+import ChatWidget from '../ChatWidget';
 
 export function DashboardLayout() {
   const navigate = useNavigate();
@@ -25,7 +26,7 @@ export function DashboardLayout() {
           <div className="p-4">
             <h1 className="text-xl font-semibold text-gray-900 dark:text-white">Dashboard</h1>
           </div>
-          
+
           <nav className="flex-1 p-4">
             <ul className="space-y-2">
               {menuItems.map((item) => (
@@ -60,6 +61,7 @@ export function DashboardLayout() {
           <Outlet />
         </main>
       </div>
+      <ChatWidget />
     </div>
   );
 }

@@ -12,7 +12,7 @@ export function LoginPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     const passwordValidation = validatePassword(credentials.password);
     if (!passwordValidation.isValid) {
       setError(passwordValidation.error || '密碼格式不正確');
