@@ -1,18 +1,17 @@
 import { Clock, Tag } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import AudioPlayer from '../components/meeting/AudioPlayer';
+import AudioPlayer, { AudioPlayerRef } from '../components/meeting/AudioPlayer';
 import { MeetingTranscript } from '../components/meeting/MeetingTranscript';
 import { useMeetingSummaries } from '../contexts/MeetingSummariesContext';
 import { MeetingSummary } from '../types/meetingSummaries';
 
 export function MeetingDetailsPage() {
   const { id } = useParams();
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const { meetingSummaries , refreshMeetingSummaries } = useMeetingSummaries()!;
+  const audioPlayerRef = useRef<AudioPlayerRef>(null);
+  const { meetingSummaries, refreshMeetingSummaries } = useMeetingSummaries()!;
   const [meetingSummary, setMeetingSummary] = useState<MeetingSummary | null>(null);
 
-  // 從 localStorage 加載會議紀錄
   useEffect(() => {
     const storedData = localStorage.getItem('meetingSummaries');
     if (storedData) {
@@ -20,7 +19,6 @@ export function MeetingDetailsPage() {
     }
   }, [refreshMeetingSummaries]);
 
-  // 當 meetingSummaries 變動時，更新 localStorage
   useEffect(() => {
     if (meetingSummaries.length > 0) {
       localStorage.setItem('meetingSummaries', JSON.stringify(meetingSummaries));
@@ -32,7 +30,6 @@ export function MeetingDetailsPage() {
     if (foundMeeting) {
       setMeetingSummary(foundMeeting);
     } else {
-      // 若找不到會議紀錄，稍後重新檢查
       const interval = setInterval(() => {
         const refreshedMeeting = meetingSummaries.find(meeting => meeting.id === id);
         if (refreshedMeeting) {
@@ -40,17 +37,19 @@ export function MeetingDetailsPage() {
           clearInterval(interval);
         }
       }, 500);
+
+      return () => clearInterval(interval);
     }
   }, [id, meetingSummaries]);
 
   if (!meetingSummary) {
     return <div>Loading...</div>;
   }
-  // In a real app, this would come from an API
+
   const handleSegmentClick = (startTime: number) => {
-    if (videoRef.current) {
-      videoRef.current.currentTime = startTime;
-      videoRef.current.play();
+    if (audioPlayerRef.current) {
+      audioPlayerRef.current.seek(startTime);
+      audioPlayerRef.current.play();
     }
   };
 
@@ -75,8 +74,7 @@ export function MeetingDetailsPage() {
             </div>
           </div>
         </div>
-
-        {/* <div className="bg-black aspect-video rounded-lg mb-8">
+       {/* <div className="bg-black aspect-video rounded-lg mb-8">
         {meetingSummary.videoUrl ? (
           <video
             ref={videoRef}
@@ -110,9 +108,13 @@ export function MeetingDetailsPage() {
             </div>
           </section>
         </div>
+
         <div className="bottom-0 w-full left-0 mt-8">
-        <AudioPlayer src="../../sample_01.mp3" />
-      </div>
+          <AudioPlayer 
+            ref={audioPlayerRef}
+            src="../../sample_01.mp3"  // Using the direct path that works
+          />
+        </div>
       </div>
     </div>
   );

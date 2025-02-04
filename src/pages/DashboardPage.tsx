@@ -5,11 +5,10 @@ import { Button } from '../components/common/Button';
 import { DateSearch } from '../components/meeting/DateSearch';
 import { MeetingCard } from '../components/meeting/MeetingCard';
 import { MeetingControls } from '../components/meeting/MeetingControls';
-import { MeetingSelectionProvider } from '../components/meeting/MeetingSelectionContext.tsx'; // Import the provider and hook
+import { MeetingSelectionProvider } from '../components/meeting/MeetingSelectionContext.tsx';
 import { useMeetingSummaries } from '../contexts/MeetingSummariesContext.tsx';
 import { fetchMeetingSummariesData } from '../services/firestore.ts';
 import { useAuth } from '../contexts/AuthContext.tsx';
-
 
 export function DashboardPage() {
   const navigate = useNavigate();
@@ -19,8 +18,10 @@ export function DashboardPage() {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [isSelectMode, setIsSelectMode] = useState(false);
   const [selectedMeetingSummaries, setSelectedMeetingSummaries] = useState<string[]>([]);
-
   
+  // 🔹 新增 `filteredMeetings` 狀態來更新 UI
+  const [filteredMeetings, setFilteredMeetings] = useState(meetingSummaries);
+
   useEffect(() => {
     if (user) {
       console.log('User ID:', user.id);
@@ -28,12 +29,12 @@ export function DashboardPage() {
         try {
           const data = await fetchMeetingSummariesData(user.id);
           refreshMeetingSummaries(data); // 更新會議摘要
+          setFilteredMeetings(data); // 🔹 更新搜尋結果
           console.log('Fetched meeting summaries:', data);
         } catch (error) {
           console.error("Error fetching meeting summaries:", error);
         }
       };
-
       fetchData();
     }
   }, [user, refreshMeetingSummaries]);
@@ -48,30 +49,44 @@ export function DashboardPage() {
 
   const availableTags = useMemo(() => {
     const tags = new Set<string>();
-    meetingSummaries.forEach(meetingSummary => meetingSummary.summary.tags.forEach(tag => tags.add(tag)));
+    meetingSummaries.forEach(meetingSummary => 
+      meetingSummary.summary.tags.forEach(tag => tags.add(tag))
+    );
     return Array.from(tags);
   }, [meetingSummaries]);
 
-  const filteredMeetings = useMemo(() => {
-    if (selectedTags.length === 0) return meetingSummaries;
-    return meetingSummaries.filter(meetingSummary =>
-      selectedTags.some(tag => meetingSummary.summary.tags.includes(tag))
-    );
+  // 🔹 依標籤篩選會議
+  useEffect(() => {
+    if (selectedTags.length === 0) {
+      setFilteredMeetings(meetingSummaries);
+    } else {
+      setFilteredMeetings(
+        meetingSummaries.filter(meetingSummary =>
+          selectedTags.some(tag => meetingSummary.summary.tags.includes(tag))
+        )
+      );
+    }
   }, [meetingSummaries, selectedTags]);
+
+  // 🔹 修正 `handleSearch`
+  const handleSearch = (startDate: string, endDate: string) => {
+    console.log(`Searching meetings from ${startDate} to ${endDate}`);
+
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    end.setHours(23, 59, 59, 999); // 🔹 設定結束日期為當天最後一秒，確保篩選完整一天
+
+    const filtered = meetingSummaries.filter(meetingSummary => {
+      const meetingDate = new Date(meetingSummary.date); // 🔹 確保 `meetingSummary.date` 轉換為 `Date`
+      return meetingDate >= start && meetingDate <= end;
+    });
+
+    console.log("Filtered Meetings:", filtered);
+    setFilteredMeetings(filtered); // 🔹 更新 `filteredMeetings`
+  };
 
   const handleNewMeeting = () => {
     navigate('/dashboard/meeting/new');
-  };
-
-  const handleSearch = (startDate: string, endDate: string) => {
-    // Filter meetings by date range
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-    const filtered = meetingSummaries.filter(meetingSummary => {
-      const meetingDate = new Date(meetingSummary.date);
-      return meetingDate >= start && meetingDate <= end;
-    });
-    // Update filtered meetings
   };
 
   return (
@@ -102,7 +117,6 @@ export function DashboardPage() {
           />
         </div>
       </div>
-
 
       <MeetingSelectionProvider>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

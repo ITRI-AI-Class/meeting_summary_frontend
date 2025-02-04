@@ -7,6 +7,7 @@ export interface MeetingSummary {
         segments: Segment[];
     };
     thumbnailUrl: string;
+    audioUrl: string; // Added this property
 }
 
 interface Summary {
