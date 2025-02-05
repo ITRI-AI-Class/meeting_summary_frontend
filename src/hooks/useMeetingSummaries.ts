@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { MeetingSummary } from '../types/meetingSummary';
-import AIService from '../services/AIService';
+import MeetingSummaryService from '../services/MeetingSummaryService';
 import FirestoreService from '../services/FirestoreService';
 
 export default function useMeetingSummaries() {
@@ -29,7 +29,7 @@ export default function useMeetingSummaries() {
     formData.append('uid', uid);
     formData.append('file', file);
     try {
-      const response = await AIService.summarize(formData);
+      const response = await MeetingSummaryService.summarize(formData);
       addMeetingSummary(response.data.summary);
       return response.data;
     } catch (error) {

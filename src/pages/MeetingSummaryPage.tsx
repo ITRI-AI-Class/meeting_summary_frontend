@@ -1,7 +1,7 @@
 import { Clock, Tag } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import AudioPlayer from '../components/meeting/AudioPlayer';
+import AudioPlayer, { AudioPlayerRef } from '../components/meeting/AudioPlayer';
 import { MeetingTranscript } from '../components/meeting/MeetingTranscript';
 import { MeetingSummary } from '../types/meetingSummary';
 import { useMeetingSummaries } from '../contexts/MeetingSummariesContext';
@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next'; // 引入 useTranslation
 export function MeetingSummaryPage() {
   const { id } = useParams();
   const videoRef = useRef<HTMLVideoElement>(null);
+  const audioPlayerRef = useRef<AudioPlayerRef>(null);
   const { meetingSummaries } = useMeetingSummaries()!;
   const [meetingSummary, setMeetingSummary] = useState<MeetingSummary | null>(null);
   const { t } = useTranslation(); // 使用 i18n 的翻譯功能
@@ -39,6 +40,10 @@ export function MeetingSummaryPage() {
     if (videoRef.current) {
       videoRef.current.currentTime = startTime;
       videoRef.current.play();
+    }
+    if (audioPlayerRef.current) {
+      audioPlayerRef.current.seek(startTime);
+      audioPlayerRef.current.play();
     }
   };
 
@@ -72,21 +77,17 @@ export function MeetingSummaryPage() {
           </div>
         </div>
 
-        {/* <div className="bg-black aspect-video rounded-lg mb-8">
-        {meetingSummary.videoUrl ? (
-          <video
-            ref={videoRef}
-            className="w-full h-full rounded-lg"
-            controls
-            poster={meetingSummary.thumbnailUrl}
-            src={meetingSummary.videoUrl}
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-white">
-            No video available
+        {meetingSummary.srcUrl.endsWith('.mp4') ? (
+          <div className="bg-black aspect-video rounded-lg mb-8">
+            <video
+              ref={videoRef}
+              className="w-full h-full rounded-lg"
+              controls
+              poster={meetingSummary.thumbnailUrl}
+              src={meetingSummary.srcUrl}
+            />
           </div>
-        )}
-      </div> */}
+        ) : null}
 
         <div className="space-y-8">
           <section>
@@ -106,9 +107,15 @@ export function MeetingSummaryPage() {
             </div>
           </section>
         </div>
-        <div className="bottom-0 w-full left-0 mt-8">
-        <AudioPlayer src="../../sample_01.mp3" />
-      </div>
+
+        {meetingSummary.srcUrl.endsWith('.mp3') ? (
+          <div className="bottom-0 w-full left-0 mt-8">
+            <AudioPlayer
+              ref={audioPlayerRef}
+              src={meetingSummary.srcUrl}
+            />
+          </div>
+        ) : null}
       </div>
     </div>
   );

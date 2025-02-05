@@ -25,7 +25,7 @@ export function MeetingCard({
 
   return (
     <div
-      onClick={onClick}
+      onClick={showCheckbox ? handleCheckboxClick : onClick}
       className={`relative bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow overflow-hidden cursor-pointer ${
         isSelected ? 'ring-2 ring-indigo-500' : ''
       }`}

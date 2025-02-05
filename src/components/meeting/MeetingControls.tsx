@@ -1,4 +1,4 @@
-import { CheckSquare, Filter, SortAsc, SortDesc } from 'lucide-react';
+import { CheckSquare, Filter, SortAsc, SortDesc, Trash2 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -8,6 +8,7 @@ interface MeetingControlsProps {
   selectedTags: string[];
   availableTags: string[];
   onTagsChange: (tags: string[]) => void;
+  onDelete: () => void;
 }
 
 export function MeetingControls({
@@ -16,6 +17,7 @@ export function MeetingControls({
   selectedTags,
   availableTags,
   onTagsChange,
+  onDelete,
 }: MeetingControlsProps) {
   const { t } = useTranslation();
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
@@ -56,6 +58,10 @@ export function MeetingControls({
     onTagsChange([]);
   };
 
+  const handleDelete = () => {
+    onDelete();
+  };
+
   return (
     <div className="flex items-center gap-2 text-sm">
       <button
@@ -72,11 +78,10 @@ export function MeetingControls({
 
       <button
         onClick={handleSelectMode}
-        className={`inline-flex items-center px-2.5 py-1.5 rounded-md border shadow-sm ${
-          isSelectMode
+        className={`inline-flex items-center px-2.5 py-1.5 rounded-md border shadow-sm ${isSelectMode
             ? 'bg-indigo-50 text-indigo-700 border-indigo-200'
             : 'bg-white hover:bg-gray-50 text-gray-700 border-gray-300'
-        }`}
+          }`}
         title={t('selectMeetings')}
       >
         <CheckSquare className="w-4 h-4" />
@@ -85,11 +90,10 @@ export function MeetingControls({
       <div className="relative" ref={filterRef}>
         <button
           onClick={() => setIsFilterOpen(!isFilterOpen)}
-          className={`inline-flex items-center px-2.5 py-1.5 rounded-md border shadow-sm ${
-            selectedTags.length > 0
+          className={`inline-flex items-center px-2.5 py-1.5 rounded-md border shadow-sm ${selectedTags.length > 0
               ? 'bg-indigo-50 text-indigo-700 border-indigo-200'
               : 'bg-white hover:bg-gray-50 text-gray-700 border-gray-300'
-          }`}
+            }`}
           title={t('filterByTags')}
         >
           <Filter className="w-4 h-4" />
@@ -134,6 +138,16 @@ export function MeetingControls({
           </div>
         )}
       </div>
+      <button
+        onClick={() => handleDelete()}
+        className={`inline-flex items-center px-2.5 py-1.5 rounded-md border shadow-sm ${selectedTags.length > 0
+            ? 'bg-indigo-50 text-indigo-700 border-indigo-200'
+            : 'bg-white hover:bg-gray-50 text-gray-700 border-gray-300'
+          }`}
+        title={t('deleteMeetings')}
+      >
+        <Trash2 className="w-4 h-4" />
+      </button>
     </div>
   );
 }

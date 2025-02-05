@@ -1,20 +1,23 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
 import { MeetingSummary, MeetingSummaryApiResponse } from '../types/meetingSummary';
 import FirestoreService from '../services/FirestoreService';
-import AIService from '../services/AIService';
+import MeetingSummaryService from '../services/MeetingSummaryService';
+import { useAuth } from './AuthContext';
 
 interface MeetingSummariesContextType {
     meetingSummaries: MeetingSummary[];
     addMeetingSummary: (meetingSummary: MeetingSummary) => void;
     sortMeetingSummaries: (direction: 'asc' | 'desc') => void;
-    summarizeMeeting: (uid: string, file: File | undefined, s3FileName: string | undefined) => Promise<MeetingSummaryApiResponse>;
+    summarizeMeeting: (file: File | undefined, s3FileName: string | undefined) => Promise<MeetingSummaryApiResponse | undefined>;
     fetchMeetingSummaries: (uid: string) => Promise<void>;
+    deleteMeetingSummary: (id: string) => Promise<void>;
 }
 
 const MeetingSummariesContext = createContext<MeetingSummariesContextType | undefined>(undefined);
 
 
 export function MeetingSummariesProvider({ children }: { children: React.ReactNode }) {
+    const { user } = useAuth();
     const [meetingSummaries, setMeetingSummaries] = useState<MeetingSummary[]>([]);
 
     const sortMeetingSummaries = useCallback((direction: 'asc' | 'desc') => {
@@ -33,22 +36,24 @@ export function MeetingSummariesProvider({ children }: { children: React.ReactNo
         });
     }, []);
 
-    const summarizeMeeting = useCallback(async (uid: string, file: File|undefined, s3FileName: string|undefined) => {
-        const formData = new FormData();
-        formData.append('uid', uid);
-        if(file){
-            formData.append('file', file);
-        }
-        if(s3FileName){
-            formData.append('s3_file_name', s3FileName);
-        }
-        try {
-            const response = await AIService.summarize(formData);
-            addMeetingSummary(response.data.summary);
-            return response.data;
-        } catch (error) {
-            console.error('Error uploading file:', error);
-            throw error;
+    const summarizeMeeting = useCallback(async (file: File | undefined, s3FileName: string | undefined) => {
+        if (user) {
+            const formData = new FormData();
+            formData.append('uid', user.id);
+            if (file) {
+                formData.append('file', file);
+            }
+            if (s3FileName) {
+                formData.append('s3_file_name', s3FileName);
+            }
+            try {
+                const response = await MeetingSummaryService.summarize(formData);
+                addMeetingSummary(response.data.summary);
+                return response.data;
+            } catch (error) {
+                console.error('Error uploading file:', error);
+                throw error;
+            }
         }
     }, [])
 
@@ -61,6 +66,24 @@ export function MeetingSummariesProvider({ children }: { children: React.ReactNo
         }
     }, []);
 
+    const deleteMeetingSummary = useCallback(async (id: string) => {
+        if(user){
+            try {
+                const response = await MeetingSummaryService.deleteSummary(user.id, id);
+                if(response.status === 200){
+                    setMeetingSummaries(prev => {
+                        var updatedSummaries = prev.filter(summary => summary.id !== id);
+                        return updatedSummaries;
+                    });      
+                }else{
+                }
+            }catch (error) {
+                console.error('Error delete file:', error);
+                throw error;
+            }
+        }
+    }, []);
+
     return (
         <MeetingSummariesContext.Provider
             value={{
@@ -69,6 +92,7 @@ export function MeetingSummariesProvider({ children }: { children: React.ReactNo
                 sortMeetingSummaries,
                 summarizeMeeting,
                 fetchMeetingSummaries,
+                deleteMeetingSummary,
             }}
         >
             {children}

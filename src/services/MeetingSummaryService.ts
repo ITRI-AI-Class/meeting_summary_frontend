@@ -1,7 +1,7 @@
 import { MeetingSummaryApiResponse } from "../types/meetingSummary";
 import api from "./api";
 
-class AIService {
+class MeetingSummaryService {
     summarize(formData: FormData) {
         return api.post<MeetingSummaryApiResponse>('/summarize', formData, {
             headers: {
@@ -9,6 +9,14 @@ class AIService {
             },
         });
     }
+
+    deleteSummary(uid: string, id: string) {
+        return api.delete<MeetingSummaryApiResponse>(`/summary/${id}`, {
+            headers: {
+                "X-User-Id": uid
+            }
+        });
+    }
 }
 
-export default new AIService()
+export default new MeetingSummaryService()

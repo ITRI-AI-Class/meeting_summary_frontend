@@ -7,6 +7,7 @@ export interface MeetingSummary {
         segments: Segment[];
     };
     thumbnailUrl: string;
+    srcUrl: string;
 }
 
 interface Summary {

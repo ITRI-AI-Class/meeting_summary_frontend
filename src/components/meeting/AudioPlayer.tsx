@@ -1,14 +1,43 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef , forwardRef, useImperativeHandle } from 'react';
 
 interface AudioPlayerProps {
   src: string;
 }
 
-const AudioPlayer: React.FC<AudioPlayerProps> = ({ src }) => {
+export interface AudioPlayerRef {
+  play: () => void;
+  pause: () => void;
+  seek: (time: number) => void;
+}
+
+// const AudioPlayer: React.FC<AudioPlayerProps> = ({ src }) => {
+//   const audioRef = useRef<HTMLAudioElement>(null);
+//   const [isPlaying, setIsPlaying] = useState<boolean>(false);
+//   const [currentTime, setCurrentTime] = useState<number>(0);
+//   const [duration, setDuration] = useState<number>(0);
+
+const AudioPlayer = forwardRef<AudioPlayerRef, AudioPlayerProps>(({ src }, ref) => {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [currentTime, setCurrentTime] = useState<number>(0);
   const [duration, setDuration] = useState<number>(0);
+
+  useImperativeHandle(ref, () => ({
+    play: () => {
+      audioRef.current?.play();
+      setIsPlaying(true);
+    },
+    pause: () => {
+      audioRef.current?.pause();
+      setIsPlaying(false);
+    },
+    seek: (time: number) => {
+      if (audioRef.current) {
+        audioRef.current.currentTime = time;
+        setCurrentTime(time);
+      }
+    }
+  }));
 
   const togglePlay = () => {
     if (audioRef.current) {
@@ -75,6 +104,6 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ src }) => {
       </div>
     </div>
   );
-};
+});
 
 export default AudioPlayer;

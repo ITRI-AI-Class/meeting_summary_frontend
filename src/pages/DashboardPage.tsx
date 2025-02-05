@@ -12,10 +12,14 @@ import { useMeetingSummaries } from "../contexts/MeetingSummariesContext.tsx";
 export function DashboardPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { meetingSummaries, sortMeetingSummaries, fetchMeetingSummaries } = useMeetingSummaries()!;
+  const { meetingSummaries, sortMeetingSummaries, fetchMeetingSummaries, deleteMeetingSummary } = useMeetingSummaries()!;
 
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [isSelectMode, setIsSelectMode] = useState(false);
+  const [dateRange, setDateRange] = useState<{ startDate?: Date; endDate?: Date }>({
+    startDate: undefined,
+    endDate: undefined,
+  });
   const [selectedMeetingSummaries, setSelectedMeetingSummaries] = useState<string[]>([]);
   const { t, i18n } = useTranslation(); // 初始化語言切換
 
@@ -50,21 +54,39 @@ export function DashboardPage() {
   }, [meetingSummaries]);
 
   const filteredMeetings = useMemo(() => {
-    console.log(meetingSummaries);
-    if (selectedTags.length === 0) return meetingSummaries;
-    return meetingSummaries.filter((meetingSummary) =>
-      selectedTags.some((tag) => meetingSummary.summary.tags.includes(tag))
-    );
-  }, [meetingSummaries, selectedTags]);
+    var filteredMeetings = meetingSummaries;
+    if (dateRange.startDate !== undefined && dateRange.endDate !== undefined) {
+      filteredMeetings = filteredMeetings.filter(meetingSummary => {
+        const meetingDate = new Date(meetingSummary.date); // 🔹 確保 `meetingSummary.date` 轉換為 `Date`
+        return meetingDate >= dateRange.startDate! && meetingDate <= dateRange.endDate!;
+      });
+    }
+    if (selectedTags.length !== 0) {
+      filteredMeetings = filteredMeetings.filter((meetingSummary) =>
+        selectedTags.some((tag) => meetingSummary.summary.tags.includes(tag))
+      );
+    }
+    return filteredMeetings;
+  }, [meetingSummaries, selectedTags, dateRange]);
 
   const handleSearch = (startDate: string, endDate: string) => {
+    console.log(`Searching meetings from ${startDate} to ${endDate}`);
+
     const start = new Date(startDate);
     const end = new Date(endDate);
-    const filtered = meetingSummaries.filter((meetingSummary) => {
-      const meetingDate = new Date(meetingSummary.date);
-      return meetingDate >= start && meetingDate <= end;
-    });
+    end.setHours(23, 59, 59, 999); // 🔹 設定結束日期為當天最後一秒，確保篩選完整一天
+
+    setDateRange({startDate:start,endDate:end});
   };
+
+
+  const handleDelete = () => {
+    if (selectedMeetingSummaries.length > 0) {
+      selectedMeetingSummaries.map(async (id) => {
+        await deleteMeetingSummary(id);
+      })
+    }
+  }
 
   return (
     <div>
@@ -83,6 +105,7 @@ export function DashboardPage() {
               selectedTags={selectedTags}
               availableTags={availableTags}
               onTagsChange={setSelectedTags}
+              onDelete={handleDelete}
             />
           </div>
         </div>

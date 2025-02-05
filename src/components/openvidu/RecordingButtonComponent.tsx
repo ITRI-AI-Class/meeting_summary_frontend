@@ -42,7 +42,7 @@ export function RecordingButton() {
                 setRecordText('錄製');
                 if (user && recordingFileName !== "") {
                     try {
-                        const result = await summarizeMeeting(user.id, undefined, recordingFileName);
+                        const result = await summarizeMeeting(undefined, recordingFileName);
                         if (result) {
                             showNotification();
                         } else {

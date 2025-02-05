@@ -69,10 +69,15 @@ export function UploadPage() {
     setIsLoading(true);
     if (file && user) {
       try {
-        const result = await summarizeMeeting(user.id, file, undefined);
-        showNotification();
-        setIsLoading(false);
-        navigate(`/dashboard/meetingSummary/${result.summary.id}`);
+        const result = await summarizeMeeting(file, undefined);
+        if(result === undefined) {
+          setIsLoading(false);
+          showNotificationError();
+        }else{
+          showNotification();
+          setIsLoading(false);
+          navigate(`/dashboard/meetingSummary/${result.summary.id}`);
+        }
       } catch (error) {
         setIsLoading(false);
         showNotificationError();
