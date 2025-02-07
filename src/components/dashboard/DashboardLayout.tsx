@@ -3,6 +3,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { Settings, FileText, LogOut, Upload, Video, ArrowLeftToLine, AlignJustify } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 import { useTranslation } from "react-i18next";
+import ChatbotWidget from "../ChatbotWidget";
 
 export function DashboardLayout() {
   const navigate = useNavigate();
@@ -117,6 +118,7 @@ export function DashboardLayout() {
           <Outlet />
         </main>
       </div>
+      <ChatbotWidget />
     </div>
   );
 }
