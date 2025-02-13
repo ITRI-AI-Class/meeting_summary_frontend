@@ -11,6 +11,7 @@ interface MeetingSummariesContextType {
     summarizeMeeting: (file: File | undefined, s3FileName: string | undefined) => Promise<MeetingSummaryApiResponse | undefined>;
     fetchMeetingSummaries: (uid: string) => Promise<void>;
     deleteMeetingSummary: (id: string) => Promise<void>;
+    refreshMeetingSummaries: (summaries: MeetingSummary[]) => void; // 新增 refreshMeetingSummaries
 }
 
 const MeetingSummariesContext = createContext<MeetingSummariesContextType | undefined>(undefined);
@@ -82,8 +83,12 @@ export function MeetingSummariesProvider({ children }: { children: React.ReactNo
                 throw error;
             }
         }
-    }, []);
+    }, [user]);
 
+    // **新增 refreshMeetingSummaries 方法**
+    const refreshMeetingSummaries = useCallback((summaries: MeetingSummary[]) => {
+        setMeetingSummaries(summaries);
+    }, []);
     return (
         <MeetingSummariesContext.Provider
             value={{
@@ -93,6 +98,7 @@ export function MeetingSummariesProvider({ children }: { children: React.ReactNo
                 summarizeMeeting,
                 fetchMeetingSummaries,
                 deleteMeetingSummary,
+                refreshMeetingSummaries, // 新增 refreshMeetingSummaries
             }}
         >
             {children}

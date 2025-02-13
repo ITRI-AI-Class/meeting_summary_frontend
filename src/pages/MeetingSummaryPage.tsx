@@ -11,9 +11,24 @@ export function MeetingSummaryPage() {
   const { id } = useParams();
   const videoRef = useRef<HTMLVideoElement>(null);
   const audioPlayerRef = useRef<AudioPlayerRef>(null);
-  const { meetingSummaries } = useMeetingSummaries()!;
+  const { meetingSummaries , refreshMeetingSummaries } = useMeetingSummaries()!;
   const [meetingSummary, setMeetingSummary] = useState<MeetingSummary | null>(null);
   const { t } = useTranslation(); // 使用 i18n 的翻譯功能
+  // 從 localStorage 加載會議紀錄
+  useEffect(() => {
+    const storedData = localStorage.getItem('meetingSummaries');
+    if (storedData) {
+      refreshMeetingSummaries(JSON.parse(storedData));
+    }
+  }, [refreshMeetingSummaries]);
+
+  // 當 meetingSummaries 變動時，更新 localStorage
+  useEffect(() => {
+    if (meetingSummaries.length > 0) {
+      localStorage.setItem('meetingSummaries', JSON.stringify(meetingSummaries));
+    }
+  }, [meetingSummaries]);
+  
   useEffect(() => {
     console.log(id);
     console.log(meetingSummaries);
