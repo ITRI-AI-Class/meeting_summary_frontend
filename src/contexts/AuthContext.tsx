@@ -21,8 +21,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         name: 'default_userName',
         email: 'default_userEmail',
         preferences: {
-          emailNotifications: false,
-          systemAlerts: false,
+          notifications:{line: false},
           darkMode: false,
         },
       });
@@ -42,8 +41,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       email: firebaseUser.email || '',
       avatarUrl: firebaseUser.photoURL || '',
       preferences: {
-        emailNotifications: false,
-        systemAlerts: false,
+        notifications:{line: false},
         darkMode: false,
       },
     }

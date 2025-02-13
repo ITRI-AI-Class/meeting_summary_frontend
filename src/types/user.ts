@@ -5,11 +5,7 @@ export interface User {
   avatarUrl?: string;
   status?: 'active' | 'inactive';
   language?: 'en' | 'zh';
-  preferences: {
-    emailNotifications: boolean;
-    systemAlerts: boolean;
-    darkMode: boolean;
-  };
+  preferences: UserPreferences;
   // stats?: {
   //   totalUploads: number;
   //   totalDuration: string;
@@ -23,4 +19,11 @@ export interface Activity {
   title: string;
   date: string;
   meetingId?: number;
+}
+
+export interface UserPreferences {
+  notifications: {
+    line: boolean;
+  };
+  darkMode: boolean;
 }

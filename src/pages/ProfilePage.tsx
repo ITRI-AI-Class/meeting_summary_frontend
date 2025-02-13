@@ -27,7 +27,7 @@ export function ProfilePage() {
     <div className="max-w-4xl mx-auto">
       <ProfileHeader user={user} onEdit={handleEdit} />
       
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-1 gap-8">
        
         
         <div className="lg:col-span-1">
