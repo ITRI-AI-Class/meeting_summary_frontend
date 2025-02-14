@@ -1,14 +1,20 @@
 import { File, Upload } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import LoadingDialog from '../components/common/LoadingDialog';
 import { useAuth } from '../contexts/AuthContext';
 import { useMeetingSummaries } from '../contexts/MeetingSummariesContext';
 import { useTranslation } from 'react-i18next'; // 引入 useTranslation
+import { LoadingDialog } from '../components/common/LoadingDialog';
 
 export function UploadPage() {
   const { t } = useTranslation(); // 使用 i18n 的翻譯功能
+  const [loadingDots, setLoadingDots] = useState('.'); // 用於管理動畫中的點
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const { isLoading, summarizeMeeting } = useMeetingSummaries()!;
+  const [isDragging, setIsDragging] = useState(false);
+  const [file, setFile] = useState<File | null>(null);
   const showNotification = () => {
     toast.success(t('upload_meeting_Btn.successNotification'), { // 使用翻譯鍵
       position: "top-right",
@@ -30,14 +36,6 @@ export function UploadPage() {
       draggable: true,
     });
   };
-
-  const navigate = useNavigate();
-  const { user } = useAuth();
-  const { summarizeMeeting } = useMeetingSummaries()!;
-
-  const [isLoading, setIsLoading] = useState(false);
-  const [isDragging, setIsDragging] = useState(false);
-  const [file, setFile] = useState<File | null>(null);
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
@@ -66,25 +64,41 @@ export function UploadPage() {
   };
 
   const handleUploadClick = async () => {
-    setIsLoading(true);
     if (file && user) {
       try {
-        const result = await summarizeMeeting(file, undefined);
+        const result = await summarizeMeeting({file:file});
         if(result === undefined) {
-          setIsLoading(false);
           showNotificationError();
         }else{
           showNotification();
-          setIsLoading(false);
           navigate(`/dashboard/meetingSummary/${result.summary.id}`);
         }
       } catch (error) {
-        setIsLoading(false);
         showNotificationError();
         console.error('Failed to upload the file:', error);
       }
     }
   };
+
+  useEffect(() => {
+      let interval: NodeJS.Timeout | null = null;
+
+      if (isLoading) {
+          interval = setInterval(() => {
+              setLoadingDots((prev) => {
+                  if (prev === '...') return '';
+                  return prev + '.';
+              });
+          }, 500);
+      } else {
+          setLoadingDots(''); // 重置為單點
+          if (interval) clearInterval(interval);
+      }
+
+      return () => {
+          if (interval) clearInterval(interval);
+      };
+  }, [isLoading]);
 
   return (
     <div className="max-w-2xl mx-auto">
@@ -142,7 +156,9 @@ export function UploadPage() {
         <Upload className="w-5 h-5" />
         <span>{t('upload_meeting_Btn.uploadRecording')}</span>
       </button>
-      <LoadingDialog isVisible={isLoading} />
+      {
+        isLoading && <LoadingDialog message={t('uploadingAndGenerating') + loadingDots} />
+      }
     </div>
   );
 }

@@ -6,18 +6,21 @@ import { FeatureCard } from '../components/welcome/FeatureCard';
 import { StepCard } from '../components/welcome/StepCard';
 import { Footer } from '../components/welcome/Footer';
 import GoogleSignIn from '../components/login/GoogleSignIn';
+import { useTranslation } from 'react-i18next';
+import { useAuth } from '../contexts/AuthContext';
 
 export function WelcomePage() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
+  const { user } = useAuth();
+  const { t } = useTranslation();
 
   return (
     <>
       {/* Loading Screen */}
       <div
-        className={`fixed inset-0 bg-white z-50 flex items-center justify-center transition-opacity duration-500 ${
-          isLoading ? 'opacity-100' : 'opacity-0 pointer-events-none'
-        }`}
+        className={`fixed inset-0 bg-white z-50 flex items-center justify-center transition-opacity duration-500 ${isLoading ? 'opacity-100' : 'opacity-0 pointer-events-none'
+          }`}
       >
         <div className="flex flex-col items-center">
           <Video className="w-12 h-12 text-indigo-600 animate-bounce" />
@@ -33,16 +36,18 @@ export function WelcomePage() {
             <div className="flex items-center justify-between h-16">
               <div className="flex items-center space-x-2">
                 <Video className="w-6 h-6 text-indigo-600" />
-                <span className="text-xl font-semibold text-gray-900">MeetingMind</span>
+                <span className="text-xl font-semibold text-gray-900">{t('appName')}</span>
               </div>
               <div className="flex items-center space-x-4">
-                <button
-                  onClick={() => navigate('/dashboard')}
-                  className="px-4 py-2 text-gray-700 hover:text-indigo-600 font-medium transition-colors"
-                >
-                  Go to Dashboard
-                </button>
-                <GoogleSignIn />
+                {user ?
+                  <button
+                    onClick={() => navigate('/dashboard')}
+                    className="w-auto px-4 py-2 bg-blue-500 text-white font-semibold text-sm rounded-lg shadow-md hover:bg-blue-600 transition-colors"
+                  >
+                    {t('dashboard')}
+                  </button>
+                  : <GoogleSignIn />
+                }
               </div>
             </div>
           </div>
@@ -55,13 +60,11 @@ export function WelcomePage() {
           </div>
           <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
             <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
-              永不再記會議筆記
+              {t('title')}
             </h1>
             <p className="text-xl text-gray-200 mb-8">
-              使用AI驅動的文字記錄、摘要和見解，轉變你的會議方式。
-              專注於對話，我們來處理文檔。
+              {t('description')}
             </p>
-            <GoogleSignIn />
           </div>
         </div>
 
@@ -69,32 +72,32 @@ export function WelcomePage() {
         <div className="bg-white py-24 px-4">
           <div className="max-w-7xl mx-auto">
             <h2 className="text-3xl font-bold text-center text-gray-900 mb-16">
-              Why Choose MeetingMind
+              {t('whyChoose')}
             </h2>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
               <FeatureCard
                 icon={<Video className="w-8 h-8" />}
-                title="Smart Transcription"
-                description="Automatic transcription with speaker detection and timestamps"
+                title={t('feature1')}
+                description={t('feature1Desc')}
                 delay={0}
               />
               <FeatureCard
                 icon={<Users className="w-8 h-8" />}
-                title="Team Collaboration"
-                description="Share insights and collaborate with your team in real-time"
+                title={t('feature2')}
+                description={t('feature2Desc')}
                 delay={200}
               />
               <FeatureCard
                 icon={<Shield className="w-8 h-8" />}
-                title="Secure & Private"
-                description="Enterprise-grade security with end-to-end encryption"
+                title={t('feature3')}
+                description={t('feature3Desc')}
                 delay={400}
               />
               <FeatureCard
                 icon={<Globe className="w-8 h-8" />}
-                title="Multi-language"
-                description="Support for multiple languages and automatic translation"
+                title={t('feature4')}
+                description={t('feature4Desc')}
                 delay={600}
               />
             </div>
@@ -105,24 +108,24 @@ export function WelcomePage() {
         <div className="bg-gray-50 py-24 px-4">
           <div className="max-w-7xl mx-auto">
             <h2 className="text-3xl font-bold text-center text-gray-900 mb-16">
-              How It Works
+              {t('howItWorks')}
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
               <StepCard
                 number="1"
-                title="Upload Recording"
-                description="Upload your meeting recording in any format"
+                title={t('uploadRecording')}
+                description={t('uploadDescription')}
               />
               <StepCard
                 number="2"
-                title="AI Processing"
-                description="Our AI automatically transcribes and summarizes your meeting"
+                title={t('aiProcessing')}
+                description={t('aiProcessingDescription')}
               />
               <StepCard
                 number="3"
-                title="Share & Collaborate"
-                description="Share insights with your team and collaborate effectively"
+                title={t('shareCollaborate')}
+                description={t('shareCollaborateDescription')}
               />
             </div>
           </div>

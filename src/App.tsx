@@ -15,21 +15,30 @@ import 'react-toastify/dist/ReactToastify.css';
 import MeetingRoomPage from './pages/MeetingRoomPage';
 
 import './i18n';  // 引入 i18n 配置
+import { PublicRoute } from './components/PublicRoute';
 export default function App() {
   return (
     <AuthProvider>
       <ThemeProvider>
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<WelcomePage />} />
-            <Route path="/login" element={<LoginPage />} />
+            <Route path="/" element={
+              <PublicRoute>
+                <WelcomePage />
+              </PublicRoute>
+            } />
+            <Route path="/login" element={
+              <PublicRoute>
+                <LoginPage />
+              </PublicRoute>
+            } />
             <Route path="/dashboard" element={
               <PrivateRoute>
                 <MeetingSummariesProvider>
                   <DashboardLayout />
                 </ MeetingSummariesProvider>
-              </PrivateRoute>}
-            >
+              </PrivateRoute>
+            }>
               <Route index element={<DashboardPage />} />
               <Route path="upload" element={<UploadPage />} />
               <Route path="meetingSummary/:id" element={<MeetingSummaryPage />} />

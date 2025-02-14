@@ -1,6 +1,7 @@
 import { CheckSquare, Filter, SortAsc, SortDesc, Trash2 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { DeleteButton } from '../common/DeleteButton';
 
 interface MeetingControlsProps {
   onSort: (direction: 'asc' | 'desc') => void;
@@ -76,23 +77,12 @@ export function MeetingControls({
         )}
       </button>
 
-      <button
-        onClick={handleSelectMode}
-        className={`inline-flex items-center px-2.5 py-1.5 rounded-md border shadow-sm ${isSelectMode
-            ? 'bg-indigo-50 text-indigo-700 border-indigo-200'
-            : 'bg-white hover:bg-gray-50 text-gray-700 border-gray-300'
-          }`}
-        title={t('selectMeetings')}
-      >
-        <CheckSquare className="w-4 h-4" />
-      </button>
-
       <div className="relative" ref={filterRef}>
         <button
           onClick={() => setIsFilterOpen(!isFilterOpen)}
           className={`inline-flex items-center px-2.5 py-1.5 rounded-md border shadow-sm ${selectedTags.length > 0
-              ? 'bg-indigo-50 text-indigo-700 border-indigo-200'
-              : 'bg-white hover:bg-gray-50 text-gray-700 border-gray-300'
+            ? 'bg-indigo-50 text-indigo-700 border-indigo-200'
+            : 'bg-white hover:bg-gray-50 text-gray-700 border-gray-300'
             }`}
           title={t('filterByTags')}
         >
@@ -138,16 +128,24 @@ export function MeetingControls({
           </div>
         )}
       </div>
+
       <button
-        onClick={() => handleDelete()}
-        className={`inline-flex items-center px-2.5 py-1.5 rounded-md border shadow-sm ${selectedTags.length > 0
-            ? 'bg-indigo-50 text-indigo-700 border-indigo-200'
-            : 'bg-white hover:bg-gray-50 text-gray-700 border-gray-300'
+        onClick={handleSelectMode}
+        className={`inline-flex items-center px-2.5 py-1.5 rounded-md border shadow-sm ${isSelectMode
+          ? 'bg-indigo-50 text-indigo-700 border-indigo-200'
+          : 'bg-white hover:bg-gray-50 text-gray-700 border-gray-300'
           }`}
-        title={t('deleteMeetings')}
+        title={t('selectMeetings')}
       >
-        <Trash2 className="w-4 h-4" />
+        <CheckSquare className="w-4 h-4" />
       </button>
+
+      {isSelectMode && (
+        <DeleteButton
+          title={t('deleteMeetings')}
+          onDelete={handleDelete}
+        />
+      )}
     </div>
   );
 }

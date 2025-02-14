@@ -37,6 +37,10 @@ export function DashboardPage() {
     fetchData();
   }, [user, fetchMeetingSummaries]); // 增加依賴 fetchMeetingSummaries，避免遺漏更新
 
+  useEffect(() => {
+    setSelectedMeetingSummaries([]);
+  },[isSelectMode])
+
   const toggleSelection = (meetingId: string) => {
     setSelectedMeetingSummaries((prev) =>
       prev.includes(meetingId)

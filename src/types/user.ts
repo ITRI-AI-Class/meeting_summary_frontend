@@ -3,13 +3,8 @@ export interface User {
   name: string;
   email: string;
   avatarUrl?: string;
-  status?: 'active' | 'inactive';
   language?: 'en' | 'zh';
-  preferences: {
-    emailNotifications: boolean;
-    systemAlerts: boolean;
-    darkMode: boolean;
-  };
+  preferences: UserPreferences;
   // stats?: {
   //   totalUploads: number;
   //   totalDuration: string;
@@ -23,4 +18,14 @@ export interface Activity {
   title: string;
   date: string;
   meetingId?: number;
+}
+
+export interface UserPreferences{
+  lineNotification: LineNotification | null;
+  darkMode: boolean;
+}
+
+export interface LineNotification{
+  uid: string;
+  enabled: boolean;
 }
