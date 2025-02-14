@@ -21,7 +21,7 @@ const GoogleSignIn = () => {
       // 登入成功後，你可以獲取用戶資料並跳轉到儀表板
       console.log('User Info:', user);
 
-      setGoogleUser(user);
+      await setGoogleUser(user);
       navigate('/dashboard');
     } catch (error) {
       console.error('Error during Google sign-in:', error);

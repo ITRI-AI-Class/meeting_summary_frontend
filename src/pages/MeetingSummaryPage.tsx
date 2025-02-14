@@ -1,19 +1,28 @@
-import { Clock, Tag } from 'lucide-react';
+import { Clock, RefreshCcw, Tag, Trash2 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useNavigation, useParams } from 'react-router-dom';
 import AudioPlayer, { AudioPlayerRef } from '../components/meeting/AudioPlayer';
 import { MeetingTranscript } from '../components/meeting/MeetingTranscript';
 import { MeetingSummary } from '../types/meetingSummary';
 import { useMeetingSummaries } from '../contexts/MeetingSummariesContext';
 import { useTranslation } from 'react-i18next'; // 引入 useTranslation
+import { Dialog } from '../components/common/Dialog';
+import { DeleteButton } from '../components/common/DeleteButton';
+import { LoadingDialog } from '../components/common/LoadingDialog';
 
 export function MeetingSummaryPage() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const videoRef = useRef<HTMLVideoElement>(null);
   const audioPlayerRef = useRef<AudioPlayerRef>(null);
-  const { meetingSummaries } = useMeetingSummaries()!;
+  const [loadingDots, setLoadingDots] = useState('.'); // 用於管理動畫中的點
+  const { isLoading, meetingSummaries, deleteMeetingSummary, summarizeMeeting } = useMeetingSummaries()!;
   const [meetingSummary, setMeetingSummary] = useState<MeetingSummary | null>(null);
   const { t } = useTranslation(); // 使用 i18n 的翻譯功能
+  const [dialog, setDialog] = useState({ "open": false, "message": "", "confirm": () => { } });
+
+  const handleOpenDialog = (message: string, handleConfirm: () => void) => setDialog({ "open": true, "message": message, "confirm": handleConfirm });
+  const handleCloseDialog = () => setDialog({ "open": false, "message": "", "confirm": () => { } });
   useEffect(() => {
     console.log(id);
     console.log(meetingSummaries);
@@ -32,8 +41,28 @@ export function MeetingSummaryPage() {
     }
   }, [id, meetingSummaries]);
 
+  useEffect(() => {
+    let interval: NodeJS.Timeout | null = null;
+
+    if (isLoading) {
+      interval = setInterval(() => {
+        setLoadingDots((prev) => {
+          if (prev === '...') return '';
+          return prev + '.';
+        });
+      }, 500);
+    } else {
+      setLoadingDots(''); // 重置為單點
+      if (interval) clearInterval(interval);
+    }
+
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isLoading]);
+
   if (!meetingSummary) {
-    return <div>Loading...</div>;
+    return "Loading...";
   }
   // In a real app, this would come from an API
   const handleSegmentClick = (startTime: number) => {
@@ -47,33 +76,74 @@ export function MeetingSummaryPage() {
     }
   };
 
+  const handleDeleteButtonClick = () => {
+    handleOpenDialog(t('confirmDelete'), handleDelete);
+  }
+
+  const handleDelete = async () => {
+    var result = await deleteMeetingSummary(meetingSummary.id);
+    if (result) {
+      navigate(-1);
+      handleCloseDialog();
+    }
+  }
+
+  const handleRegenerate = async () => {
+    var s3FileName = meetingSummary.srcUrl.split('/').pop();
+    console.log(s3FileName);
+    var result = await summarizeMeeting({ s3FileName: s3FileName, summaryId: meetingSummary.id });
+    if (result) {
+      handleCloseDialog();
+    }
+  }
+
   return (
     <div className="relative">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-3xl font-bold text-gray-900 mb-4">{meetingSummary.summary.title}</h1>
 
-        <div className="flex items-center space-x-4 mb-6">
-          <div className="flex items-center text-gray-600">
-            <Clock className="w-4 h-4 mr-1" />
-            <span>
-              {new Date(meetingSummary.date).toLocaleString('zh-TW', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit'
-              })}
-            </span>
+        <div className='flex justify-between mb-6'>
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center text-gray-600">
+              <Clock className="w-4 h-4 mr-1" />
+              <span>
+                {new Date(meetingSummary.date).toLocaleString('zh-TW', {
+                  year: 'numeric',
+                  month: '2-digit',
+                  day: '2-digit',
+                  hour: '2-digit',
+                  minute: '2-digit'
+                })}
+              </span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Tag className="w-4 h-4 text-gray-600" />
+              <div className="flex gap-2">
+                {meetingSummary.summary.tags.map(tag => (
+                  <span key={tag} className="px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full text-sm">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
           </div>
           <div className="flex items-center space-x-2">
-            <Tag className="w-4 h-4 text-gray-600" />
-            <div className="flex gap-2">
-              {meetingSummary.summary.tags.map(tag => (
-                <span key={tag} className="px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full text-sm">
-                  {tag}
-                </span>
-              ))}
-            </div>
+            <button
+              onClick={() => handleOpenDialog(t('confirmRegenerate'), handleRegenerate)}
+              className="
+              px-2.5 py-1.5 rounded-md border
+              bg-white border-gray-300
+              text-gray-600 dark:text-gray-400 
+              hover:bg-gray-50 dark:hover:bg-gray-900/50
+            "
+              title={t('regenerateMeetings')}
+            >
+              <RefreshCcw className="w-4 h-4" />
+            </button>
+            <DeleteButton
+              title={t('deleteMeetings')}
+              onDelete={handleDeleteButtonClick}
+            />
           </div>
         </div>
 
@@ -117,6 +187,16 @@ export function MeetingSummaryPage() {
           </div>
         ) : null}
       </div>
+      {dialog.open && (
+        <Dialog
+          message={dialog.message}
+          onClose={handleCloseDialog}
+          onConfirm={dialog.confirm}
+        />
+      )}
+      {
+        isLoading && <LoadingDialog message={t('uploadingAndGenerating') + loadingDots} />
+      }
     </div>
   );
 }

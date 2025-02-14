@@ -11,7 +11,7 @@ export function RecordingButton() {
     const [recordText, setRecordText] = useState('錄製');
     const { summarizeMeeting } = useMeetingSummaries()!;
     const { user } = useAuth();
-    const [recordingFileName, setRecordingFileName] = useState('');
+    const [recordingFileName, setRecordingFileName] = useState<string|null>(null);
 
     const showNotification = () => {
         toast.success('摘要生成完成', {
@@ -40,19 +40,22 @@ export function RecordingButton() {
                 setRecordText('停止');
             } else {
                 setRecordText('錄製');
-                if (user && recordingFileName !== "") {
-                    try {
-                        const result = await summarizeMeeting(undefined, recordingFileName);
-                        if (result) {
-                            showNotification();
-                        } else {
+                console.log(recordingFileName);
+                if(recordingFileName){
+                    if (user) {
+                        try {
+                            const result = await summarizeMeeting({s3FileName:recordingFileName});
+                            if (result) {
+                                showNotification();
+                            } else {
+                                showNotificationError();
+                            }
+                        } catch (error) {
                             showNotificationError();
                         }
-                    } catch (error) {
+                    } else {
                         showNotificationError();
                     }
-                } else {
-                    showNotificationError();
                 }
             }
         };

@@ -4,13 +4,20 @@ import FirestoreService from '../services/FirestoreService';
 import MeetingSummaryService from '../services/MeetingSummaryService';
 import { useAuth } from './AuthContext';
 
+interface MeetingSummariesApiDataProps {
+    file?: File;
+    s3FileName?: string;
+    summaryId?: string;
+}
+
 interface MeetingSummariesContextType {
+    isLoading: boolean;
     meetingSummaries: MeetingSummary[];
     addMeetingSummary: (meetingSummary: MeetingSummary) => void;
     sortMeetingSummaries: (direction: 'asc' | 'desc') => void;
-    summarizeMeeting: (file: File | undefined, s3FileName: string | undefined) => Promise<MeetingSummaryApiResponse | undefined>;
+    summarizeMeeting: (data: MeetingSummariesApiDataProps) => Promise<MeetingSummaryApiResponse | undefined>;
     fetchMeetingSummaries: (uid: string) => Promise<void>;
-    deleteMeetingSummary: (id: string) => Promise<void>;
+    deleteMeetingSummary: (id: string) => Promise<boolean>;
 }
 
 const MeetingSummariesContext = createContext<MeetingSummariesContextType | undefined>(undefined);
@@ -19,6 +26,7 @@ const MeetingSummariesContext = createContext<MeetingSummariesContextType | unde
 export function MeetingSummariesProvider({ children }: { children: React.ReactNode }) {
     const { user } = useAuth();
     const [meetingSummaries, setMeetingSummaries] = useState<MeetingSummary[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
 
     const sortMeetingSummaries = useCallback((direction: 'asc' | 'desc') => {
         setMeetingSummaries(prev => [...prev].sort((a, b) => {
@@ -31,20 +39,26 @@ export function MeetingSummariesProvider({ children }: { children: React.ReactNo
     // 新增 addMeetingSummary 方法
     const addMeetingSummary = useCallback((newMeeting: MeetingSummary) => {
         setMeetingSummaries(prev => {
-            const updatedSummaries = [...prev, newMeeting];
+            /// 排除已存在的meeting
+            var filterPrev = prev.filter(summary => summary.id !== newMeeting.id)
+            const updatedSummaries = [...filterPrev, newMeeting];
             return updatedSummaries;
         });
     }, []);
 
-    const summarizeMeeting = useCallback(async (file: File | undefined, s3FileName: string | undefined) => {
+    const summarizeMeeting = useCallback(async (data:MeetingSummariesApiDataProps) => {
         if (user) {
+            setIsLoading(true);
             const formData = new FormData();
             formData.append('uid', user.id);
-            if (file) {
-                formData.append('file', file);
+            if (data.file) {
+                formData.append('file', data.file);
             }
-            if (s3FileName) {
-                formData.append('s3_file_name', s3FileName);
+            if (data.s3FileName) {
+                formData.append('s3_file_name', data.s3FileName);
+            }
+            if(data.summaryId){
+                formData.append('summary_id', data.summaryId);
             }
             try {
                 const response = await MeetingSummaryService.summarize(formData);
@@ -53,6 +67,8 @@ export function MeetingSummariesProvider({ children }: { children: React.ReactNo
             } catch (error) {
                 console.error('Error uploading file:', error);
                 throw error;
+            }finally{
+                setIsLoading(false);
             }
         }
     }, [])
@@ -67,26 +83,34 @@ export function MeetingSummariesProvider({ children }: { children: React.ReactNo
     }, []);
 
     const deleteMeetingSummary = useCallback(async (id: string) => {
-        if(user){
+        if (user) {
             try {
+                setIsLoading(true);
                 const response = await MeetingSummaryService.deleteSummary(user.id, id);
-                if(response.status === 200){
+                if (response.status === 200) {
                     setMeetingSummaries(prev => {
                         var updatedSummaries = prev.filter(summary => summary.id !== id);
                         return updatedSummaries;
-                    });      
-                }else{
+                    });
+                    return true;
+                } else {
+                    return false;
                 }
-            }catch (error) {
+            } catch (error) {
                 console.error('Error delete file:', error);
                 throw error;
+            } finally{
+                setIsLoading(false);
             }
+        } else {
+            return false;
         }
     }, []);
 
     return (
         <MeetingSummariesContext.Provider
             value={{
+                isLoading,
                 meetingSummaries,
                 addMeetingSummary,
                 sortMeetingSummaries,

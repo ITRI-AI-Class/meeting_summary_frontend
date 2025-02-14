@@ -5,10 +5,11 @@ i18n.use(initReactI18next).init({
   resources: {
     en: {
       translation: {
+        appName: "Sumeet",
         // 登入頁面英文
         welcome_back: "Welcome back",
         please_sign_in: "Please sign in to continue",
-
+        gotoDashboard: "Go to Dashboard",
         // 首頁頁面英文
         title: "Never Take Meeting Notes Again",
         description:
@@ -67,6 +68,7 @@ i18n.use(initReactI18next).init({
         new_meeting: "New Meeting",
         home: "Home",
         upload: "Upload",
+        uploadingAndGenerating: "uploading and generating summary",
         newestFirst: "Newest first",
         oldestFirst: "Oldest first",
         selectMeetings: "Select meetings",
@@ -90,7 +92,9 @@ i18n.use(initReactI18next).init({
           edit: "Updated profile information",
         },
         profile_settings: {
+          lineNotifications: "Line Notifications",
           emailNotifications: "Email Notifications",
+          lineNotificationsDesc: "Receive Line notification updates about your meetings",
           emailNotificationsDesc: "Receive email updates about your meetings",
           systemAlerts: "System Alerts",
           systemAlertsDesc: "Get notified when processing is complete",
@@ -99,7 +103,7 @@ i18n.use(initReactI18next).init({
         },
         upload_meeting_Btn: {
           uploadMeetingRecording: "Upload Meeting Recording",
-          dragAndDrop: "Drag and drop your video file here, or",
+          dragAndDrop: "Drag and drop your recording file here, or",
           browse: "browse",
           uploadRecording: "Upload Recording",
           successNotification: "Meeting summary completed!",
@@ -122,20 +126,26 @@ i18n.use(initReactI18next).init({
         },
         Transcript: "Transcript",
         Summary: "Summary",
+        confirmDelete: "Confirm Delete",
+        confirmRegenerate: "Confirm Regenerate",
+        regenerateMeetings: "Regenerate Meetings",
+        confirm: "Confirm",
+        cancel: "Cancel",
       },
     },
     zh: {
       translation: {
+        appName: "AI智匯雲",
         // 登入頁面中文
         welcome_back: "歡迎回來",
         please_sign_in: "請登錄以繼續",
-
+        gotoDashboard: "前往控制面板",
         // 首頁頁面中文
         title: "永不再記會議筆記",
         description:
           "使用AI驅動的文字記錄、摘要和見解，轉變你的會議方式。專注於對話，我們來處理文檔。",
         freeStart: "免費開始",
-        whyChoose: "為什麼選擇 Sumeet",
+        whyChoose: "為什麼選擇 AI智匯雲",
         howItWorks: "如何運作",
         uploadRecording: "上傳會議記錄",
         aiProcessing: "AI處理",
@@ -182,6 +192,7 @@ i18n.use(initReactI18next).init({
         new_meeting: "新增會議",
         home: "首頁",
         upload: "上傳",
+        uploadingAndGenerating: "正在上傳並生成摘要",
         newestFirst: "最新優先",
         oldestFirst: "最舊優先",
         selectMeetings: "選擇會議",
@@ -204,6 +215,8 @@ i18n.use(initReactI18next).init({
           edit: "更新了個人資料",
         },
         profile_settings: {
+          lineNotifications: "Line通知",
+          lineNotificationsDesc: "接收有關您會議的Line通知",
           emailNotifications: "電子郵件通知",
           emailNotificationsDesc: "接收有關您會議的電子郵件更新",
           systemAlerts: "系統提醒",
@@ -214,7 +227,7 @@ i18n.use(initReactI18next).init({
         
         upload_meeting_Btn: {
           uploadMeetingRecording: "上傳會議錄音",
-          dragAndDrop: "將錄音文件拖曳到這裡，或",
+          dragAndDrop: "將會議文件拖曳到這裡，或",
           browse: "瀏覽",
           uploadRecording: "上傳會議記錄",
           successNotification: "會議總結已完成!",
@@ -237,6 +250,11 @@ i18n.use(initReactI18next).init({
         },
         Transcript: "錄音逐字稿",
         Summary: "總結",
+        confirmDelete: "確認刪除",
+        confirmRegenerate: "確認重新生成摘要",
+        regenerateMeetings: "重新生成摘要",
+        confirm: "確認",
+        cancel: "取消",
       },
     },
   },
