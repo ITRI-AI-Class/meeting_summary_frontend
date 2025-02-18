@@ -4,6 +4,7 @@ import api from "./api";
 
 class MeetingSummaryService {
     summarize(formData: FormData) {
+        console.log("summarize");
         return api.post<MeetingSummaryApiResponse>('/summarize', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',

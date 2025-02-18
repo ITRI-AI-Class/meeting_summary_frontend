@@ -67,6 +67,7 @@ export function UploadPage() {
     if (file && user) {
       try {
         const result = await summarizeMeeting({file:file});
+        console.log(result);
         if(result === undefined) {
           showNotificationError();
         }else{
@@ -111,18 +112,15 @@ export function UploadPage() {
         className={`
           border-2 border-dashed rounded-lg p-12
           flex flex-col items-center justify-center
-          ${isDragging ? 'border-indigo-500 bg-indigo-50' : 'border-gray-300'}
+          ${isDragging ? 'border-indigo-500 bg-indigo-50' : 'border-gray-300 dark:border-gray-600'}
           transition-colors
           hover:text-indigo-500 cursor-pointer
         `}
       >
         <Upload className="w-12 h-12 text-gray-400 mb-4" />
 
-        <div className="text-gray-600 text-center mb-4">
+        <div className="text-gray-600 dark:text-gray-400 text-center mb-4">
           {t('upload_meeting_Btn.dragAndDrop')}
-          <div className="text-indigo-600 hover:text-indigo-500 cursor-pointer">
-            {t('upload_meeting_Btn.browse')}
-          </div>
         </div>
 
         {file && (
@@ -148,7 +146,7 @@ export function UploadPage() {
           flex items-center justify-center space-x-2
           ${file
             ? 'bg-indigo-600 hover:bg-indigo-500 text-white'
-            : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+            : 'bg-gray-100 dark:bg-gray-700 text-gray-400 cursor-not-allowed'
           }
           transition-colors
         `}

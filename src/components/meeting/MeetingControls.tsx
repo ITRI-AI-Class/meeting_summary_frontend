@@ -67,7 +67,10 @@ export function MeetingControls({
     <div className="flex items-center gap-2 text-sm">
       <button
         onClick={handleSort}
-        className="inline-flex items-center px-2.5 py-1.5 bg-white hover:bg-gray-50 text-gray-700 rounded-md border border-gray-300 shadow-sm"
+        className="inline-flex items-center px-2.5 py-1.5 bg-white 
+        hover:bg-gray-50 text-gray-700 rounded-md border border-gray-300 
+        shadow-sm dark:hover:bg-indigo-400
+        dark:bg-indigo-200 dark:border-transparent dark:text-indigo-700 transition-colors"
         title={sortDirection === 'desc' ? t('newestFirst') : t('oldestFirst')}
       >
         {sortDirection === 'desc' ? (
@@ -80,10 +83,10 @@ export function MeetingControls({
       <div className="relative" ref={filterRef}>
         <button
           onClick={() => setIsFilterOpen(!isFilterOpen)}
-          className={`inline-flex items-center px-2.5 py-1.5 rounded-md border shadow-sm ${selectedTags.length > 0
-            ? 'bg-indigo-50 text-indigo-700 border-indigo-200'
-            : 'bg-white hover:bg-gray-50 text-gray-700 border-gray-300'
-            }`}
+          className={`transition-colors inline-flex items-center px-2.5 py-1.5 rounded-md border shadow-sm ${selectedTags.length > 0
+            ? 'bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-400'
+            : 'bg-white dark:bg-indigo-200 hover:bg-gray-50 text-gray-700 border-gray-300'
+            } dark:border-transparent dark:text-indigo-700 dark:hover:bg-indigo-400`}
           title={t('filterByTags')}
         >
           <Filter className="w-4 h-4" />
@@ -131,10 +134,10 @@ export function MeetingControls({
 
       <button
         onClick={handleSelectMode}
-        className={`inline-flex items-center px-2.5 py-1.5 rounded-md border shadow-sm ${isSelectMode
-          ? 'bg-indigo-50 text-indigo-700 border-indigo-200'
-          : 'bg-white hover:bg-gray-50 text-gray-700 border-gray-300'
-          }`}
+        className={`transition-colors inline-flex items-center px-2.5 py-1.5 rounded-md border shadow-sm ${isSelectMode
+          ? 'bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-400'
+          : 'bg-white hover:bg-gray-50 text-gray-700 border-gray-300 dark:bg-indigo-200'
+          } dark:border-transparent dark:text-indigo-700 dark:hover:bg-indigo-400`}
         title={t('selectMeetings')}
       >
         <CheckSquare className="w-4 h-4" />

@@ -47,6 +47,7 @@ export function MeetingSummariesProvider({ children }: { children: React.ReactNo
     }, []);
 
     const summarizeMeeting = useCallback(async (data:MeetingSummariesApiDataProps) => {
+        console.log(user);
         if (user) {
             setIsLoading(true);
             const formData = new FormData();
@@ -71,7 +72,7 @@ export function MeetingSummariesProvider({ children }: { children: React.ReactNo
                 setIsLoading(false);
             }
         }
-    }, [])
+    }, [user])
 
     const fetchMeetingSummaries = useCallback(async (uid: string) => {
         try {
@@ -105,7 +106,7 @@ export function MeetingSummariesProvider({ children }: { children: React.ReactNo
         } else {
             return false;
         }
-    }, []);
+    }, [user]);
 
     return (
         <MeetingSummariesContext.Provider

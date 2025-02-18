@@ -1,4 +1,4 @@
-import { Clock, RefreshCcw, Tag, Trash2 } from 'lucide-react';
+import { Clock, Download, RefreshCcw, Tag, Trash2 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useNavigation, useParams } from 'react-router-dom';
 import AudioPlayer, { AudioPlayerRef } from '../components/meeting/AudioPlayer';
@@ -93,6 +93,7 @@ export function MeetingSummaryPage() {
     console.log(s3FileName);
     var result = await summarizeMeeting({ s3FileName: s3FileName, summaryId: meetingSummary.id });
     if (result) {
+      setMeetingSummary(result.summary);
       handleCloseDialog();
     }
   }
@@ -100,11 +101,11 @@ export function MeetingSummaryPage() {
   return (
     <div className="relative">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">{meetingSummary.summary.title}</h1>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">{meetingSummary.summary.title}</h1>
 
         <div className='flex justify-between mb-6'>
           <div className="flex items-center space-x-4">
-            <div className="flex items-center text-gray-600">
+            <div className="flex items-center text-gray-600 dark:text-gray-400">
               <Clock className="w-4 h-4 mr-1" />
               <span>
                 {new Date(meetingSummary.date).toLocaleString('zh-TW', {
@@ -117,10 +118,10 @@ export function MeetingSummaryPage() {
               </span>
             </div>
             <div className="flex items-center space-x-2">
-              <Tag className="w-4 h-4 text-gray-600" />
+              <Tag className="w-4 h-4 text-gray-600 dark:text-gray-400" />
               <div className="flex gap-2">
                 {meetingSummary.summary.tags.map(tag => (
-                  <span key={tag} className="px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full text-sm">
+                  <span key={tag} className="px-3 py-1 bg-indigo-50 dark:bg-indigo-200 text-indigo-700 dark:text-indigo-900 rounded-full text-sm">
                     {tag}
                   </span>
                 ))}
@@ -134,7 +135,9 @@ export function MeetingSummaryPage() {
               px-2.5 py-1.5 rounded-md border
               bg-white border-gray-300
               text-gray-600 dark:text-gray-400 
-              hover:bg-gray-50 dark:hover:bg-gray-900/50
+              hover:bg-gray-50 dark:hover:bg-indigo-400
+              dark:border-transparent dark:text-indigo-700
+              dark:bg-indigo-200 transition-colors
             "
               title={t('regenerateMeetings')}
             >
@@ -161,15 +164,16 @@ export function MeetingSummaryPage() {
 
         <div className="space-y-8">
           <section>
-            <h2 className="text-xl font-semibold text-gray-900 mb-3">{t('Summary')}</h2>
-            <p className="text-gray-600 bg-gray-50 p-4 rounded-lg">
+            <h2 className="text-xl font-semibold text-gray-900 mb-3 dark:text-white">{t('Summary')}</h2>
+            <p className="text-gray-600 bg-gray-50 p-4 rounded-lg dark:text-gray-200 dark:bg-gray-800">
               {meetingSummary.summary.content}
             </p>
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-gray-900 mb-3">{t('Transcript')}</h2>
-            <div className="bg-white p-4 rounded-lg border border-gray-200 max-h-96 overflow-y-auto">
+            <h2 className="text-xl font-semibold text-gray-900 mb-3 dark:text-white">{t('Transcript')}</h2>
+            <div className="bg-white p-4 rounded-lg border border-gray-200 max-h-96 overflow-y-auto 
+            dark:text-gray-200 dark:bg-gray-800 dark:border-transparent">
               <MeetingTranscript
                 segments={meetingSummary.transcription.segments}
                 onSegmentClick={handleSegmentClick}
@@ -195,7 +199,7 @@ export function MeetingSummaryPage() {
         />
       )}
       {
-        isLoading && <LoadingDialog message={t('uploadingAndGenerating') + loadingDots} />
+        isLoading && <LoadingDialog message={t('handling') + loadingDots} />
       }
     </div>
   );

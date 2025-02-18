@@ -17,16 +17,21 @@ import {
   LayoutContextProvider,
   ParticipantTile,
   RoomAudioRenderer,
+  useEnsureRoom,
 } from '@livekit/components-react';
 import { useCreateLayoutContext } from '@livekit/components-react';
 import { usePinnedTracks, useTracks } from '@livekit/components-react';
 import { ControlBar } from './ControlBarComponent';
 import { Chat } from './ChatComponent';
+import { useEffect, useState } from 'react';
+import { io, Socket } from 'socket.io-client';
+import { toast } from 'react-toastify';
 
 /**
  * @public
  */
 export interface VideoConferenceProps extends React.HTMLAttributes<HTMLDivElement> {
+  socket: Socket;
   chatMessageFormatter?: MessageFormatter;
   chatMessageEncoder?: MessageEncoder;
   chatMessageDecoder?: MessageDecoder;
@@ -53,12 +58,14 @@ export interface VideoConferenceProps extends React.HTMLAttributes<HTMLDivElemen
  * @public
  */
 export function VideoConference({
+  socket,
   chatMessageFormatter,
   chatMessageDecoder,
   chatMessageEncoder,
   SettingsComponent,
   ...props
 }: VideoConferenceProps) {
+  const room = useEnsureRoom();
   const [widgetState, setWidgetState] = React.useState<WidgetState>({
     showChat: false,
     unreadMessages: 0,
@@ -87,6 +94,7 @@ export function VideoConference({
 
   const focusTrack = usePinnedTracks(layoutContext)?.[0];
   const carouselTracks = tracks.filter((track) => !isEqualTrackRef(track, focusTrack));
+  const localTrack = tracks.find((track) => track.participant.isLocal);
 
   React.useEffect(() => {
     // If screen share tracks are published, and no pin is set explicitly, auto set the screen share.
@@ -126,6 +134,108 @@ export function VideoConference({
     focusTrack?.publication?.trackSid,
     tracks,
   ]);
+
+  useEffect(() => {
+    if (socket?.active && localTrack) {
+      console.log(localTrack);
+      const videoTrack = localTrack.publication?.track?.mediaStream;
+      const videoElement = document.createElement("video");
+      videoElement.srcObject = videoTrack!; // 綁定 track
+      videoElement.play();
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      const sendFrame = async () => {
+        try {
+          if (videoElement.readyState === videoElement.HAVE_ENOUGH_DATA) {
+            canvas.width = videoElement.videoWidth;
+            canvas.height = videoElement.videoHeight;
+            ctx!.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+
+            const base64data = canvas.toDataURL("image/jpeg");
+            console.log("run send image");
+            if (socket.active) {
+              // console.log(room);
+              socket.send(JSON.stringify({ username: room.localParticipant.identity, image: base64data })); // 發送圖片
+            }
+          }
+        } catch (error) {
+          console.error("擷取影像錯誤:", error);
+        }
+      }
+
+      // 每 250 毫秒傳送一次
+      const intervalId = setInterval(sendFrame, 1000);
+
+      // 當 socket 關閉時停止傳輸
+      return () => clearInterval(intervalId);
+    }
+  }, [socket, localTrack]);
+
+  useEffect(() => {
+    if (socket?.active && localTrack) {
+      socket.on("gestureDetection", (data) => {
+        // 確保 data 是 JSON 物件
+        if (typeof data === "string") {
+          data = JSON.parse(data);
+        }
+
+        // 確保資料格式正確
+        if (data) {
+          // 解構 JSON 物件
+          const { gesture, username } = data;
+          var pinTrack = tracks.find((track)=>track.participant.identity === username);
+          if (gesture !== "None") {
+            var message = username;
+            console.log(gesture);
+            switch (gesture) {
+              case "Open_Palm":
+              case "Closed_Fist":
+                message += " 想要講話";
+                break;
+              case "Thumb_Up":
+                message += " 表示贊同";
+                break;
+              case "Thumb_Down":
+                message += " 表示反對";
+                break;
+              case "Victory":
+                message += " 擺出拍照手勢";
+                break;
+              case "Pointing_Up":
+                message += " 向上指";
+                break;
+            }
+            // setGesture(gesture);
+            showNotification(message,pinTrack);
+          }
+        } else {
+          console.error("Invalid data format:", data);
+        }
+      });
+
+
+      return () => {
+        socket.off("gestureDetection");
+      }
+    }
+  }, [socket, localTrack]);
+
+  const showNotification = (message: string, pinTrack: TrackReferenceOrPlaceholder | undefined) => {
+    toast.success(message, { // 使用翻譯鍵
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      onClick: () => {
+        console.log('Notification clicked');
+        if (pinTrack) {
+          layoutContext.pin.dispatch?.({ msg: 'set_pin', trackReference: pinTrack });
+        }
+      }
+    });
+  };
 
   // useWarnAboutMissingStyles();
 
