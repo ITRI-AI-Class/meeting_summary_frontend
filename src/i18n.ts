@@ -103,8 +103,7 @@ i18n.use(initReactI18next).init({
         },
         upload_meeting_Btn: {
           uploadMeetingRecording: "Upload Meeting Recording",
-          dragAndDrop: "Drag and drop your recording file here, or",
-          browse: "browse",
+          dragAndDrop: "Drag and drop your recording file here, or click to open file selector",
           uploadRecording: "Upload Recording",
           successNotification: "Meeting summary completed!",
           errorNotification: "Upload failed!",
@@ -131,6 +130,16 @@ i18n.use(initReactI18next).init({
         regenerateMeetings: "Regenerate Meetings",
         confirm: "Confirm",
         cancel: "Cancel",
+        lineNotification:{
+          title: "Line Notificaiton",
+          active: "Active",
+          activeDesc: "Receive Line notification updates about your meetings",
+          lineId: "Line ID",
+          bind: "Bind",
+          unbind: "Unbind",
+        },
+        language: "Language",
+        handling: "Handling",
       },
     },
     zh: {
@@ -227,8 +236,7 @@ i18n.use(initReactI18next).init({
         
         upload_meeting_Btn: {
           uploadMeetingRecording: "上傳會議錄音",
-          dragAndDrop: "將會議文件拖曳到這裡，或",
-          browse: "瀏覽",
+          dragAndDrop: "將會議文件拖曳到這裡，或點擊選擇檔案",
           uploadRecording: "上傳會議記錄",
           successNotification: "會議總結已完成!",
           errorNotification: "上傳失敗!",
@@ -255,6 +263,16 @@ i18n.use(initReactI18next).init({
         regenerateMeetings: "重新生成摘要",
         confirm: "確認",
         cancel: "取消",
+        lineNotification:{
+          title: "Line通知",
+          active: "開啟通知",
+          activeDesc: "接收有關您會議的Line通知",
+          lineId: "Line ID",
+          bind: "綁定",
+          unbind: "解除綁定",
+        },
+        language: "語言",
+        handling: "處理中",
       },
     },
   },

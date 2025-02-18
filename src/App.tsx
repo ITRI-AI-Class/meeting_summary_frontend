@@ -8,7 +8,7 @@ import { DashboardPage } from './pages/DashboardPage';
 import { UploadPage } from './pages/UploadPage';
 import { MeetingSummaryPage } from './pages/MeetingSummaryPage';
 import { ProfilePage } from './pages/ProfilePage';
-import { LoginPage } from './pages/LoginPage';
+// import { LoginPage } from './pages/LoginPage';
 import { MeetingSummariesProvider } from './contexts/MeetingSummariesContext';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -27,17 +27,17 @@ export default function App() {
                 <WelcomePage />
               </PublicRoute>
             } />
-            <Route path="/login" element={
+            {/* <Route path="/login" element={
               <PublicRoute>
                 <LoginPage />
               </PublicRoute>
-            } />
+            } /> */}
             <Route path="/dashboard" element={
-              <PrivateRoute>
-                <MeetingSummariesProvider>
+              <MeetingSummariesProvider>
+                <PrivateRoute>
                   <DashboardLayout />
-                </ MeetingSummariesProvider>
-              </PrivateRoute>
+                </PrivateRoute>
+              </ MeetingSummariesProvider>
             }>
               <Route index element={<DashboardPage />} />
               <Route path="upload" element={<UploadPage />} />

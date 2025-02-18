@@ -15,12 +15,12 @@ export function MeetingTranscript({
         <div 
           key={index}
           onClick={() => onSegmentClick?.(segment.startTime)}
-          className="p-3 hover:bg-gray-50 rounded cursor-pointer"
+          className="p-3 hover:bg-gray-50 dark:hover:bg-gray-700 rounded cursor-pointer"
         >
-          <div className="text-sm text-gray-500 mb-1">
+          <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">
             {formatTime(segment.startTime)} - {formatTime(segment.endTime)}
           </div>
-          <p className="text-gray-700">{segment.text}</p>
+          <p className="text-gray-700 dark:text-gray-200">{segment.text}</p>
         </div>
       ))}
     </div>

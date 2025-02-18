@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Play } from 'lucide-react';
 
 interface MeetingCardThumbnailProps {
@@ -7,21 +7,23 @@ interface MeetingCardThumbnailProps {
 }
 
 export function MeetingCardThumbnail({ thumbnailUrl, duration }: MeetingCardThumbnailProps) {
+  const [imgSrc, setImgSrc] = useState(thumbnailUrl);
   return (
     <div className="relative aspect-video bg-gray-100 rounded-t-lg overflow-hidden">
-      {thumbnailUrl ? (
+      {imgSrc ? (
         <img 
-          src={thumbnailUrl} 
+          src={imgSrc} 
           alt="Meeting thumbnail" 
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover dark:bg-black"
+          onError={() => setImgSrc(undefined)}
         />
       ) : (
-        <div className="flex items-center justify-center h-full">
-          <Play className="w-12 h-12 text-gray-400" />
+        <div className="flex items-center justify-center h-full dark:bg-black">
+          <Play className="w-12 h-12 text-gray-400 dark:text-gray-400" />
         </div>
       )}
       {duration && (
-        <div className="absolute bottom-2 right-2 bg-black/75 text-white text-xs px-2 py-1 rounded">
+        <div className="absolute bottom-2 right-2 bg-black/75 text-white text-xs px-2 py-1 rounded dark:bg-gray-800 dark:bg-opacity-70">
           {formatDuration(duration)}
         </div>
       )}

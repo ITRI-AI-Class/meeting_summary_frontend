@@ -9,8 +9,8 @@ interface CustomAxiosRequestConfig extends Axios.AxiosXHRConfig<string> {
 var env = import.meta.env.MODE;
 
 const instance = axios.create({
-  baseURL: env === 'localtest' ? 'http://localhost:6080/api/' : env === 'dev' ? 'https://172.20.10.11:6080/api/' : '/api/',
-  timeout: 30000,
+  baseURL: env === 'localtest' ? 'http://localhost:6080/api/' : env === 'dev' ? 'https://172.20.10.11:6080/api/' : 'api/',
+  // timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
   },

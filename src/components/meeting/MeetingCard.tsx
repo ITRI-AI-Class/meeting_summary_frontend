@@ -26,7 +26,7 @@ export function MeetingCard({
   return (
     <div
       onClick={showCheckbox ? handleCheckboxClick : onClick}
-      className={`relative bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow overflow-hidden cursor-pointer ${
+      className={`relative bg-white dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md transition-shadow overflow-hidden cursor-pointer ${
         isSelected ? 'ring-2 ring-indigo-500' : ''
       }`}
     >
@@ -36,7 +36,7 @@ export function MeetingCard({
       />
 
       <div className="p-4">
-        <h3 className="text-lg font-semibold text-gray-900 mb-3">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
           {meetingSummary.summary.title}
         </h3>
 
@@ -44,14 +44,14 @@ export function MeetingCard({
           {meetingSummary.summary.tags.map((tag) => (
             <span
               key={tag}
-              className="px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full text-sm font-medium"
+              className="px-3 py-1 bg-indigo-50 dark:bg-indigo-200 text-indigo-700 dark:text-indigo-900 rounded-full text-sm font-medium"
             >
               {tag}
             </span>
           ))}
         </div>
 
-        <div className="flex items-center text-sm text-gray-500">
+        <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
           <Calendar className="w-4 h-4 mr-1" />
           <time>{new Date(meetingSummary.date).toLocaleDateString()}</time>
         </div>

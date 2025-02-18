@@ -9,24 +9,24 @@ export function DashboardLayout() {
   const navigate = useNavigate();
   const { logout } = useAuth();
   const { t, i18n } = useTranslation();
-  const [language, setLanguage] = useState(localStorage.getItem("language") || "en");
+  // const [language, setLanguage] = useState(localStorage.getItem("language") || "en");
   const [isCollapsed, setIsCollapsed] = useState(false); // 控制導覽列是否縮小
 
-  // 初始化語言設定
-  useEffect(() => {
-    i18n.changeLanguage(language);
-  }, [i18n, language]);
+  // // 初始化語言設定
+  // useEffect(() => {
+  //   i18n.changeLanguage(language);
+  // }, [i18n, language]);
 
   const handleLogout = () => {
     logout();
     navigate("/");
   };
 
-  const handleLanguageChange = (lang: string) => {
-    setLanguage(lang);
-    i18n.changeLanguage(lang);
-    localStorage.setItem("language", lang); // 儲存語言設定
-  };
+  // const handleLanguageChange = (lang: string) => {
+  //   // setLanguage(lang);
+  //   i18n.changeLanguage(lang);
+  //   localStorage.setItem("language", lang); // 儲存語言設定
+  // };
 
   const menuItems = [
     { icon: <FileText className="w-5 h-5" />, label: t("meetingNotes"), path: "/dashboard" },
@@ -47,7 +47,7 @@ export function DashboardLayout() {
     <div className="flex h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
       {/* Sidebar */}
       <div
-        className={`w-${isCollapsed ? '20' : '64'} bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 transition-all duration-300 relative`}
+        className={`${isCollapsed && 'w-20'} min-w-[${isCollapsed ? '20px' : '240px'}] bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 transition-all duration-300 relative`}
       >
         <div className="flex flex-col h-full">
           {/* 上方功能列 */}

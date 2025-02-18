@@ -23,19 +23,19 @@ export function DashboardPage() {
   const [selectedMeetingSummaries, setSelectedMeetingSummaries] = useState<string[]>([]);
   const { t, i18n } = useTranslation(); // 初始化語言切換
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (user) {
-        try {
-          await fetchMeetingSummaries(user.id);
-        } catch (error) {
-          console.error("Error fetching meeting summaries:", error);
-        }
-      }
-    };
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     if (user) {
+  //       try {
+  //         await fetchMeetingSummaries(user.id);
+  //       } catch (error) {
+  //         console.error("Error fetching meeting summaries:", error);
+  //       }
+  //     }
+  //   };
 
-    fetchData();
-  }, [user, fetchMeetingSummaries]); // 增加依賴 fetchMeetingSummaries，避免遺漏更新
+  //   fetchData();
+  // }, [user, fetchMeetingSummaries]); // 增加依賴 fetchMeetingSummaries，避免遺漏更新
 
   useEffect(() => {
     setSelectedMeetingSummaries([]);

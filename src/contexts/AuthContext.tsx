@@ -5,8 +5,11 @@ import FirestoreService from '../services/FirestoreService';
 import UserService from '../services/UserService';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from '../firebase';
+import { useTranslation } from 'react-i18next';
+import { useTheme } from './ThemeContext';
 
 interface AuthContextType {
+  isUpdating: boolean,
   isChecked: boolean;
   user: User | null;
   setGoogleUser: (firebaseUser: FirebaseUser) => void;
@@ -22,6 +25,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isChecked, setIsChecked] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { t, i18n } = useTranslation();
   const auth = getAuth();
 
   const login = useCallback((username: string, password: string) => {
@@ -31,6 +35,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         name: 'default_userName',
         email: 'default_userEmail',
         preferences: {
+          language: 'zh',
           lineNotification: {
             uid: "",
             enabled: false
@@ -63,10 +68,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       email: firebaseUser.email || '',
       avatarUrl: firebaseUser.photoURL || '',
       preferences: firestoreUser?.preferences ?? {
+        language: 'zh',
         lineNotification: null,
         darkMode: false,
       },
     }
+    i18n.changeLanguage(user.preferences.language);
     // const docRef = doc(db, "user", firebaseUser.uid);
     // setDoc(docRef, user);
     // localStorage.setItem('uid', firebaseUser.uid);
@@ -130,7 +137,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ isChecked, user, setGoogleUser, login, logout, updateUser }}>
+    <AuthContext.Provider value={{ isUpdating, isChecked, user, setGoogleUser, login, logout, updateUser }}>
       {children}
     </AuthContext.Provider>
   );

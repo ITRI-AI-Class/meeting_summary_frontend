@@ -3,7 +3,6 @@ export interface User {
   name: string;
   email: string;
   avatarUrl?: string;
-  language?: 'en' | 'zh';
   preferences: UserPreferences;
   // stats?: {
   //   totalUploads: number;
@@ -21,6 +20,7 @@ export interface Activity {
 }
 
 export interface UserPreferences{
+  language: string;
   lineNotification: LineNotification | null;
   darkMode: boolean;
 }
