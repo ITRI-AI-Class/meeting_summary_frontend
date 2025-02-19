@@ -92,10 +92,14 @@ export function RecordingButton() {
         <button
             onClick={handleRecord}
             id="recordButton"
-            // disabled={!isRecording}
-            className="flex items-center justify-center px-6 py-3 rounded-md bg-red-600 text-white font-bold text-lg shadow-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2"
+            disabled={recordText === '停止中...' || recordText === '錄製中...'}
+            className={`
+                flex items-center justify-center px-4 rounded-lg border border-red-500 
+                font-bold shadow-lg bg-[#1e1e1e] text-red-500 py-[9.5px]
+                ${recordText !== '停止中...' && recordText !== '錄製中...' ? 'hover:bg-red-500 hover:text-white' : 'bg-red-500'}
+            `}
         >
-            <span id="recordIcon" className="mr-2 w-4 h-4 bg-red-800 rounded-full"></span>
+            <span id="recordIcon" className="w-4 h-4 mr-2 bg-[#9b2029] rounded-full"></span>
             <span id="recordText"> {recordText}</span>
         </button>
     );

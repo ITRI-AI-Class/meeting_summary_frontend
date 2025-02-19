@@ -12,6 +12,7 @@ const instance = axios.create({
   baseURL: env === 'localtest' ? 'http://localhost:6080/api/' : env === 'dev' ? 'https://172.20.10.11:6080/api/' : 'api/',
   // timeout: 30000,
   headers: {
+    'Access-Control-Expose-Headers': 'Content-Disposition',
     'Content-Type': 'application/json',
   },
 });
@@ -37,6 +38,7 @@ instance.interceptors.request.use(
 // 響應攔截器
 instance.interceptors.response.use(
   (response) => {
+    console.log(response.headers);
     return response;
   },
   async (error) => {
