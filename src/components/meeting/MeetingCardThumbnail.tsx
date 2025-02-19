@@ -14,11 +14,11 @@ export function MeetingCardThumbnail({ thumbnailUrl, duration }: MeetingCardThum
         <img 
           src={imgSrc} 
           alt="Meeting thumbnail" 
-          className="w-full h-full object-cover dark:bg-black"
+          className="w-full h-full object-cover dark:bg-gray-400"
           onError={() => setImgSrc(undefined)}
         />
       ) : (
-        <div className="flex items-center justify-center h-full dark:bg-black">
+        <div className="flex items-center justify-center h-full dark:bg-gray-400">
           <Play className="w-12 h-12 text-gray-400 dark:text-gray-400" />
         </div>
       )}

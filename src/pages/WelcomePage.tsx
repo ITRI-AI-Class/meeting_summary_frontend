@@ -12,24 +12,24 @@ import { useAuth } from '../contexts/AuthContext';
 export function WelcomePage() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
-  const { user } = useAuth();
+  const { isChecked,user } = useAuth();
   const { t } = useTranslation();
 
   return (
     <>
       {/* Loading Screen */}
       <div
-        className={`fixed inset-0 bg-white z-50 flex items-center justify-center transition-opacity duration-500 ${isLoading ? 'opacity-100' : 'opacity-0 pointer-events-none'
+        className={`fixed inset-0 bg-white z-50 flex items-center justify-center transition-opacity duration-500 ${!isChecked ? 'opacity-100' : 'opacity-0 pointer-events-none'
           }`}
       >
         <div className="flex flex-col items-center">
           <Video className="w-12 h-12 text-indigo-600 animate-bounce" />
-          <h2 className="mt-4 text-xl font-semibold text-gray-800">Loading...</h2>
+          <h2 className="mt-4 text-xl font-semibold text-gray-800">{t('loading')}</h2>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className={`min-h-screen transition-opacity duration-500 ${isLoading ? 'opacity-0' : 'opacity-100'}`}>
+      <div className={`min-h-screen transition-opacity duration-500 ${!isChecked ? 'opacity-0' : 'opacity-100'}`}>
         {/* Navigation */}
         <nav className="fixed top-0 left-0 right-0 bg-white/90 backdrop-blur-md z-50">
           <div className="container mx-auto px-4">

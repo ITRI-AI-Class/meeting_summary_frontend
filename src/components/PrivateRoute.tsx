@@ -8,16 +8,20 @@ export function PrivateRoute({ children }: { children: React.ReactNode }) {
   const { fetchMeetingSummaries } = useMeetingSummaries()!;
   console.log("PrivateRoute");
 
-  // **✅ 確保所有 Hooks 都在最上方執行**
   useEffect(() => {
-    if (user) {
-      fetchMeetingSummaries(user.id).catch((error) => {
-        console.error("Error fetching meeting summaries:", error);
-      });
-    }
-  }, [user, fetchMeetingSummaries]);
+    const fetchData = async () => {
+      if (user) {
+        try {
+          await fetchMeetingSummaries();
+        } catch (error) {
+          console.error("Error fetching meeting summaries:", error);
+        }
+      }
+    };
 
-  // **✅ `isChecked` 還沒完成時，回傳 `null`，避免錯誤的 JSX**
+    fetchData();
+  }, [fetchMeetingSummaries]); // 增加依賴 fetchMeetingSummaries，避免遺漏更新
+
   if (!isChecked) {
     return null;
   }

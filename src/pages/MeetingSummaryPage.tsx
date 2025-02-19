@@ -16,7 +16,7 @@ export function MeetingSummaryPage() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const audioPlayerRef = useRef<AudioPlayerRef>(null);
   const [loadingDots, setLoadingDots] = useState('.'); // 用於管理動畫中的點
-  const { isLoading, meetingSummaries, deleteMeetingSummary, summarizeMeeting } = useMeetingSummaries()!;
+  const { isLoading, meetingSummaries, deleteMeetingSummary, summarizeMeeting, downloadMeetingSummary } = useMeetingSummaries()!;
   const [meetingSummary, setMeetingSummary] = useState<MeetingSummary | null>(null);
   const { t } = useTranslation(); // 使用 i18n 的翻譯功能
   const [dialog, setDialog] = useState({ "open": false, "message": "", "confirm": () => { } });
@@ -98,6 +98,13 @@ export function MeetingSummaryPage() {
     }
   }
 
+  const handleDownload = async () => {
+    var s3FileName = meetingSummary.srcUrl.split('/').pop();
+    console.log(s3FileName);
+    var result = await downloadMeetingSummary(meetingSummary.id);
+    handleCloseDialog();
+  }
+
   return (
     <div className="relative">
       <div className="max-w-4xl mx-auto">
@@ -143,6 +150,20 @@ export function MeetingSummaryPage() {
             >
               <RefreshCcw className="w-4 h-4" />
             </button>
+            <button
+              onClick={() => handleOpenDialog(t('confirmDownload'), handleDownload)}
+              className="
+              px-2.5 py-1.5 rounded-md border
+              bg-white border-gray-300
+              text-gray-600 dark:text-gray-400 
+              hover:bg-gray-50 dark:hover:bg-indigo-400
+              dark:border-transparent dark:text-indigo-700
+              dark:bg-indigo-200 transition-colors
+            "
+              title={t('download')}
+            >
+              <Download className="w-4 h-4" />
+            </button>
             <DeleteButton
               title={t('deleteMeetings')}
               onDelete={handleDeleteButtonClick}
@@ -183,7 +204,7 @@ export function MeetingSummaryPage() {
         </div>
 
         {meetingSummary.srcUrl.endsWith('.mp3') ? (
-          <div className="bottom-0 w-full left-0 mt-8">
+          <div className="mt-8">
             <AudioPlayer
               ref={audioPlayerRef}
               src={meetingSummary.srcUrl}

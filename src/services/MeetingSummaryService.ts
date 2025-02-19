@@ -20,6 +20,15 @@ class MeetingSummaryService {
         });
     }
 
+    downloadSummary(uid: string, id: string) {
+        return api.get<Blob>(`/summary/${id}/download`, {
+            headers: {
+                "X-User-Id": uid
+            },
+            responseType: 'blob'
+        });
+    }
+
     getChatbotHistory(uid: string) {
         return api.get<ChatbotHistoryApiResponse>('/chatbot/history', {
             headers: {

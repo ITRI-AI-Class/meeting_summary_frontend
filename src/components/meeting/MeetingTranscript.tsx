@@ -20,7 +20,7 @@ export function MeetingTranscript({
           <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">
             {formatTime(segment.startTime)} - {formatTime(segment.endTime)}
           </div>
-          <p className="text-gray-700 dark:text-gray-200">{segment.text}</p>
+          <p className="text-gray-700 dark:text-white">{segment.text}</p>
         </div>
       ))}
     </div>

@@ -23,19 +23,19 @@ export function DashboardPage() {
   const [selectedMeetingSummaries, setSelectedMeetingSummaries] = useState<string[]>([]);
   const { t, i18n } = useTranslation(); // 初始化語言切換
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     if (user) {
-  //       try {
-  //         await fetchMeetingSummaries(user.id);
-  //       } catch (error) {
-  //         console.error("Error fetching meeting summaries:", error);
-  //       }
-  //     }
-  //   };
+  useEffect(() => {
+    const fetchData = async () => {
+      if (user) {
+        try {
+          await fetchMeetingSummaries();
+        } catch (error) {
+          console.error("Error fetching meeting summaries:", error);
+        }
+      }
+    };
 
-  //   fetchData();
-  // }, [user, fetchMeetingSummaries]); // 增加依賴 fetchMeetingSummaries，避免遺漏更新
+    fetchData();
+  }, [fetchMeetingSummaries]); // 增加依賴 fetchMeetingSummaries，避免遺漏更新
 
   useEffect(() => {
     setSelectedMeetingSummaries([]);
@@ -116,6 +116,7 @@ export function DashboardPage() {
       </div>
 
       <MeetingSelectionProvider>
+      {filteredMeetings.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredMeetings.map((meetingSummary) => (
             <MeetingCard
@@ -128,6 +129,30 @@ export function DashboardPage() {
             />
           ))}
         </div>
+      ) : (
+        <div className="flex flex-col items-center justify-center text-center pt-[30vh]">
+          <h2 className="text-2xl font-semibold text-gray-800 dark:text-white">
+            {t("no_meetings_title", "No meetings found")}
+          </h2>
+          <p className="text-gray-600 dark:text-gray-400 mt-2">
+            {t("no_meetings_description")}
+          </p>
+          <div className="flex gap-x-2">
+          <button
+            onClick={() => navigate("/dashboard/upload")}
+            className="mt-4 px-6 py-2 text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition"
+          >
+            {t("upload_meeting")}
+          </button>
+          <button
+            onClick={() => navigate("/dashboard/meeting")}
+            className="mt-4 px-6 py-2 text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition"
+          >
+            {t("new_meeting")}
+          </button>
+          </div>
+        </div>
+      )}
       </MeetingSelectionProvider>
     </div>
   );

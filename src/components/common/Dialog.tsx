@@ -18,7 +18,7 @@ export function Dialog({ message, onClose, onConfirm }: DialogProps) {
                 <div className="flex justify-end space-x-4">
                     <button
                         onClick={onClose}
-                        className="px-4 py-2 bg-gray-200 text-red-600 rounded-lg hover:bg-gray-300"
+                        className="px-4 py-2 bg-white text-red-600 rounded-lg hover:bg-red-50 border border-red-600"
                     >
                         {t("cancel")}
                     </button>

@@ -4,11 +4,12 @@ import ReactMarkdown from 'react-markdown';
 import { useTranslation } from 'react-i18next';
 
 export function ChatbotWidget() {
-    const {isLoading, chatbotMessages, getChatbotMessage, getChatHistory} = useChatbot();
+    const { isLoading, chatbotMessages, getChatbotMessage, getChatHistory } = useChatbot();
     const [isActive, setIsActive] = useState(false);
     const [inputMessage, setInputMessage] = useState('');
     const [loadingDots, setLoadingDots] = useState('.'); // 用於管理動畫中的點
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const chatContainerRef = useRef<HTMLDivElement>(null);
     const { t } = useTranslation(); // 初始化語言切換
 
     const scrollToBottom = () => {
@@ -26,6 +27,25 @@ export function ChatbotWidget() {
     const toggleChat = () => {
         setIsActive(!isActive);
     };
+
+    // 🔥 偵測點擊外部時關閉 chat
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (chatContainerRef.current && !chatContainerRef.current.contains(event.target as Node)) {
+                setIsActive(false);
+            }
+        };
+
+        if (isActive) {
+            document.addEventListener("mousedown", handleClickOutside);
+        } else {
+            document.removeEventListener("mousedown", handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [isActive]);
 
     useEffect(() => {
         let interval: NodeJS.Timeout | null = null;
@@ -58,7 +78,7 @@ export function ChatbotWidget() {
     };
 
     return (
-        <>
+        <div ref={chatContainerRef}>
             <div className={`chat-container ${isActive ? 'active' : ''} z-50`}>
                 {/* Chat Header */}
                 <div className="chat-header">
@@ -127,7 +147,7 @@ export function ChatbotWidget() {
                 <span className="open-icon">💬</span>
                 <span className="close-icon">✕</span>
             </button>
-        </>
+        </div>
     );
 };
 

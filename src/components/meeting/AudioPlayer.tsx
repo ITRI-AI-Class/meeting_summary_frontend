@@ -63,7 +63,7 @@ const AudioPlayer = forwardRef<AudioPlayerRef, AudioPlayerProps>(({ src }, ref) 
   };
 
   return (
-    <div className="bg-gray-100 p-4 rounded-lg shadow-md">
+    <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg shadow-md">
       <audio
         ref={audioRef}
         src={src}
@@ -71,7 +71,7 @@ const AudioPlayer = forwardRef<AudioPlayerRef, AudioPlayerProps>(({ src }, ref) 
         onLoadedMetadata={handleLoadedMetadata}
       />
       <div className="flex items-center justify-between">
-        <button onClick={togglePlay} className="text-gray-700">
+        <button onClick={togglePlay} className="text-gray-700 dark:text-gray-200">
           {isPlaying ? (
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -89,7 +89,7 @@ const AudioPlayer = forwardRef<AudioPlayerRef, AudioPlayerProps>(({ src }, ref) 
             min="0"
             max={duration}
             value={currentTime}
-            className="w-full h-2 bg-gray-200 rounded-full appearance-none focus:outline-none"
+            className="w-full h-2 bg-gray-200 dark:bg-gray-400 rounded-full appearance-none focus:outline-none peer"
             onChange={(e) => {
               if (audioRef.current) {
                 audioRef.current.currentTime = Number(e.target.value);
@@ -98,10 +98,26 @@ const AudioPlayer = forwardRef<AudioPlayerRef, AudioPlayerProps>(({ src }, ref) 
             }}
           />
         </div>
-        <span className="text-gray-700 text-sm">
+        <span className="text-gray-700 dark:text-gray-200 text-sm">
           {new Date(currentTime * 1000).toISOString().substr(14, 5)} / {new Date(duration * 1000).toISOString().substr(14, 5)}
         </span>
       </div>
+      <style>
+    {`
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 16px;
+        height: 16px;
+        background-color: #F9FAFB; /* 滑動點顏色 */
+        border-radius: 50%;
+        cursor: pointer;
+      }
+      input[type="range"]:hover::-webkit-slider-thumb {
+        background-color: #F9FAFB; /* 滑鼠懸停時變色 */
+      }
+    `}
+  </style>
     </div>
   );
 });
