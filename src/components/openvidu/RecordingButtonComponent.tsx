@@ -95,8 +95,8 @@ export function RecordingButton() {
             disabled={recordText === '停止中...' || recordText === '錄製中...'}
             className={`
                 flex items-center justify-center px-4 rounded-lg border border-red-500 
-                font-bold shadow-lg bg-[#1e1e1e] text-red-500 py-[9.5px]
-                ${recordText !== '停止中...' && recordText !== '錄製中...' ? 'hover:bg-red-500 hover:text-white' : 'bg-red-500'}
+                font-bold shadow-lg bg-[#1e1e1e] text-red-500 py-[9.5px] 
+                ${recordText !== '停止中...' && recordText !== '錄製中...' ? 'hover:bg-red-500 hover:text-white' : 'bg-red-500 text-white'}
             `}
         >
             <span id="recordIcon" className="w-4 h-4 mr-2 bg-[#9b2029] rounded-full"></span>
